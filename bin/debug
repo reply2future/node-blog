@@ -1,0 +1,24 @@
+var app = require('../app');
+var http = require('http');
+// TODO:配置端口
+app.set('port', '3000');
+
+var server = http.createServer(app);
+
+var boot = function(){
+	server.listen(app.get('port'), function(){
+		console.log('Node blog is listenning');
+	});
+};
+
+var shutdown = function(){
+	server.close();
+}
+
+if(require.main === module){
+	boot();
+}else{
+	exports.boot = boot;
+	exports.shutdown = shutdown;
+	exports.port = app.get('port');
+}
