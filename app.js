@@ -23,8 +23,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-// TODO:docker container ip
-const dbUrl = process.env.MONGOHQ_URL || 'mongodb://172.17.0.3:27017/blog',
+// through docker --link the mongodb container
+// access mongodb using docker container alias
+const dbUrl = process.env.MONGOHQ_URL || 'mongodb://mongodb:27017/blog',
 	  db = mongoskin.db(dbUrl, {safe: true}),
 	  collections = {
 		  articles: db.collection('articles'),
