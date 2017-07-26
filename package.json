@@ -4,13 +4,20 @@
   "description": "a blog builded with Node.js,MongoDB etc.",
   "main": "app.js",
   "scripts": {
-	"start":"node ./bin/debug",
+    "start": "node ./bin/debug",
     "test": "./node_modules/mocha/bin/mocha tests/*.js"
   },
   "author": "mervyn",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
+    "bootstrap": "^3.3.7",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
+    "jquery": "^3.2.1",
+    "mongodb": "^2.2.30",
+    "mongoskin": "^2.1.0",
+    "morgan": "^1.8.2",
     "pug": "^2.0.0-rc.2"
   },
   "devDependencies": {

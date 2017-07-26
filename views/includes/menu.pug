@@ -1,0 +1,14 @@
+.menu
+	ul.nav.nav-pills
+		li(class=(menu === "index")?"active":"")
+			a(href="/") Home
+		if(admin || menu === "admin" || menu === "post")
+			li(class=(menu === "post")?"active":"")
+				a(href="/article/post") Post
+			li(class=(menu === "admin")?"active":"")
+				a(href="/article/admin") Admin
+			li
+				a(href="/user/logout") Log out
+		else
+			li(class=(menu === "login")?"active":"")
+				a(href="/user/login") Log in

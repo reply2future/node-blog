@@ -1,2 +1,14 @@
-h1 Hello
-p= msg
+extends layout
+
+block page
+	- var menu = 'index'
+block content
+	if(articles.length === 0)
+		| There's no published content yet.
+		a(href="/user/login") Log in
+		| to post and publish.
+	else
+		each article, index in articles
+			div
+				h2
+					a(href="/article/" + article.slug)= article.title
