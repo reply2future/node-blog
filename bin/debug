@@ -1,12 +1,14 @@
 var app = require('../app');
 var http = require('http');
-// TODO:配置端口
-app.set('port', '3000');
+
+const port = process.env.PORT || 3000;
+
+app.set('port', port);
 
 var server = http.createServer(app);
 
 var boot = function(){
-	server.listen(app.get('port'), function(){
+	server.listen(port, function(){
 		console.log('Node blog is listenning');
 	});
 };
@@ -20,5 +22,5 @@ if(require.main === module){
 }else{
 	exports.boot = boot;
 	exports.shutdown = shutdown;
-	exports.port = app.get('port');
+	exports.port = port;
 }

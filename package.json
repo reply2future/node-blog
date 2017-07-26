@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "a blog builded with Node.js,MongoDB etc.",
   "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/feimeizhan/node-blog"
+  },
   "scripts": {
     "start": "node ./bin/debug",
     "test": "./node_modules/mocha/bin/mocha tests/*.js"
