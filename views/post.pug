@@ -5,7 +5,7 @@ block content
 	h2 Post an Article
 	div= error
 	div.col-md-8
-		form(action="/article/post", method="POST", role="form")
+		form(action="/articles/post", method="POST", role="form")
 			div.form-group
 				label(for="title") Title
 				input#title.form-control(name="title", type="text", placeholder="Javascript is good")

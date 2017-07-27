@@ -6,10 +6,9 @@ const express = require('express'),
 	  cookieParser = require('cookie-parser'),
 	  bodyParser = require('body-parser');
 
-const index = require('./routes/page/index'),
-	  article = require('./routes/page/article'),
-	  user = require('./routes/page/user'),
-	  articleApi = require('./routes/api/article');
+const routes = require('./routes/exports'),
+	  pages = routes.pages,
+	  api = routes.api;
 
 const app = express();
 app.locals.appTitle = 'node-blog';
@@ -41,13 +40,24 @@ app.use(function(req, res, next){
 	return next();
 });
 
+debugger
+
 // page routes
-app.use('/', index);
-app.use('/user', user);
-app.use('/article', article);
+app.get(['/', '/index'], pages.index.getIndexView);
+app.get('/users/login', pages.users.getLoginView);
+app.post('/users/login', pages.users.postLogin);
+app.get('/users/logout', pages.users.logout);
+app.get('/articles/post', pages.articles.getPostView);
+app.post('/articles/post', pages.articles.postArticle);
+app.get('/articles/admin', pages.articles.getAdminView);
+app.get('/articles/:slug', pages.articles.getArticleBySlug);
+
 
 // RESTful api
-app.use('/api/articles', articleApi);
+app.put('/api/articles/:id', api.articles.editArticleById);
+app.delete('/api/articles/:id', api.articles.delArticleById);
+app.get('/api/articles', api.articles.getAllArticles);
+app.post('/api/articles', api.articles.postArticle);
 
 app.use(function(req, res){
 	res.sendStatus(404);

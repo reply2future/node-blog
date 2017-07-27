@@ -5,10 +5,10 @@ block page
 block content
 	if(articles.length === 0)
 		| There's no published content yet.
-		a(href="/user/login") Log in
+		a(href="/users/login") Log in
 		| to post and publish.
 	else
 		each article, index in articles
 			div
 				h2
-					a(href="/article/" + article.slug)= article.title
+					a(href="/articles/" + article.slug)= article.title

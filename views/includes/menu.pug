@@ -4,11 +4,11 @@
 			a(href="/") Home
 		if(admin || menu === "admin" || menu === "post")
 			li(class=(menu === "post")?"active":"")
-				a(href="/article/post") Post
+				a(href="/articles/post") Post
 			li(class=(menu === "admin")?"active":"")
-				a(href="/article/admin") Admin
+				a(href="/articles/admin") Admin
 			li
-				a(href="/user/logout") Log out
+				a(href="/users/logout") Log out
 		else
 			li(class=(menu === "login")?"active":"")
-				a(href="/user/login") Log in
+				a(href="/users/login") Log in

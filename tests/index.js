@@ -26,9 +26,9 @@ describe('server', function(){
 				.end(function(err, res){
 					seedArticles.forEach(function(item, index, list){
 						if(item.published){
-							expect(res.text).to.contain('<h2><a href="/article/' + item.slug + '">' + item.title);
+							expect(res.text).to.contain('<h2><a href="/articles/' + item.slug + '">' + item.title);
 						} else {
-							expect(res.text).not.to.contain('<h2><a href="/article/' + item.slug + '">' + item.title);
+							expect(res.text).not.to.contain('<h2><a href="/articles/' + item.slug + '">' + item.title);
 						}
 					});
 
@@ -43,12 +43,12 @@ describe('server', function(){
 			let n = seedArticles.length;
 			seedArticles.forEach(function(item, index, list){
 				superagent
-					.get('http://localhost:' + app.port + '/article/' + seedArticles[index].slug)
+					.get('http://localhost:' + app.port + '/articles/' + seedArticles[index].slug)
 					.end(function(err, res){
 						if(item.published){
 							expect(res.text).to.contain(seedArticles[index].text);
 						}else{
-							expect(res.status).to.be(401);
+							expect(res.status).to.be(404);
 						}
 
 						if(index + 1 === n){
