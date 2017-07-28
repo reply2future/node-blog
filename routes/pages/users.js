@@ -19,7 +19,7 @@ exports.getLoginView = function(req, res, next){
  */
 exports.postLogin = function(req, res, next){
 	if(!req.body.email || !req.body.password){
-		return res.render('/users/login', { error: 'Email or Password is empty'});
+		return res.render('login', { error: 'Email or Password is empty'});
 	}
 
 	req.collections.users.findOne({
@@ -29,7 +29,7 @@ exports.postLogin = function(req, res, next){
 		if(error)
 			return next(error);
 		if(!user)
-			return res.render('/users/login', {error: 'Incorrect email and password combination.'});
+			return res.render('login', {error: 'Incorrect email and password combination.'});
 		req.session.user = user;
 		req.session.admin = user.admin;
 		res.redirect('/articles/admin');
