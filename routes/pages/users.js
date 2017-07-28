@@ -11,13 +11,29 @@ exports.getLoginView = function(req, res, next){
 
 /*
  * post login
+ * 
  * {
  *   method: 'POST',
  *   url: '/users/login'
  * }
  */
 exports.postLogin = function(req, res, next){
-	res.redirect('/');
+	if(!req.body.email || !req.body.password){
+		return res.render('/users/login', { error: 'Email or Password is empty'});
+	}
+
+	req.collections.users.findOne({
+		email: req.body.email,
+		password: req.body.password
+	}, function(error, user){
+		if(error)
+			return next(error);
+		if(!user)
+			return res.render('/users/login', {error: 'Incorrect email and password combination.'});
+		req.session.user = user;
+		req.session.admin = user.admin;
+		res.redirect('/articles/admin');
+	});
 };
 
 /*
@@ -28,5 +44,6 @@ exports.postLogin = function(req, res, next){
  * }
  */
 exports.logout = function(req, res, next){
+	req.session.destroy();
 	res.redirect('/');
 };

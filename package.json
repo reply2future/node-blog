@@ -18,6 +18,7 @@
     "bootstrap": "^3.3.7",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
+    "express-session": "^1.15.4",
     "jquery": "^3.2.1",
     "mongodb": "^2.2.30",
     "mongoskin": "^2.1.0",
