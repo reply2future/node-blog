@@ -48,7 +48,7 @@ app.use(function(req, res, next){
 
 // Authentication
 app.use(function(req, res, next){
-	if(res.session && req.session.admin)
+	if(req.session && req.session.admin)
 		res.locals.admin = true;
 	next();
 });
