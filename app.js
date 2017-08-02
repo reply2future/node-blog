@@ -31,7 +31,7 @@ app.use(session({
 // through docker --link the mongodb container
 // access mongodb using docker container alias
 const dbUrl = process.env.MONGOHQ_URL || 'mongodb://mongodb:27017/blog',
-	  db = mongoskin.db(dbUrl, {safe: true}),
+	  db = mongoskin.db(dbUrl),
 	  collections = {
 		  articles: db.collection('articles'),
 		  users: db.collection('users')

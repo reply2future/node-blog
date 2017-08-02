@@ -1,24 +1,111 @@
-TWITTER_KEY = <your twitter key>
-TWITTER_SECRET = <your twitter secret>
-COOKIE_SECRET = <your cookie secret>
-SESSION_SECRET = <your session secret>
+# *******************************************************
+# private information
+# you should fill the variable
+# *******************************************************
+TWITTER_KEY = 
+TWITTER_SECRET = 
+COOKIE_SECRET = 
+SESSION_SECRET = 
+# mongo information
+MONGO_ADMIN = 
+MONGO_ADMIN_PWD =
+MONGO_BLOG_USER = 
+MONGO_BLOG_PWD = 
+# *******************************************************
+
+MONGO_ADD_ADMIN_EVAL = "db.createUser({ user: '$(MONGO_ADMIN)', pwd: '$(MONGO_ADMIN_PWD)', roles: [{ role: 'userAdminAnyDatabase', db: 'admin' } ] });"
+MONGO_ADD_BLOG_EVAL = "db = db.getSiblingDB('blog'); db.createUser({ user: '$(MONGO_BLOG_USER)', pwd: '$(MONGO_BLOG_PWD)', roles: [{ role: 'readWrite', db: 'blog' } ] });"
+
+
+# container information
+MONGO_IMAGE_NAME = mongodb-env
+MONGO_CONTAINER_NAME = mongodb-blog
+NODE_LINK_MONGO_ALIAS = mongodb-blog
+NODE_IMAGE_NAME = node-env
+NODE_CONTAINER_NAME = node-blog
+
+# options
 REPORTER = list
 MOCHA_OPTS = --ui bdd -c
-PROCESS_ENV = PORT=3000 MONGOHQ_URL=mongodb://mongodb-blog:27017/blog COOKIE_SECRET=$(COOKIE_SECRET) SESSION_SECRET=$(SESSION_SECRET) TWITTER_KEY=$(TWITTER_KEY) TWITTER_SECRET=$(TWITTER_SECRET)
+PROCESS_ENV = PORT=3000 MONGOHQ_URL=mongodb://$(MONGO_BLOG_USER):$(MONGO_BLOG_PWD)@$(NODE_LINK_MONGO_ALIAS):27017/blog COOKIE_SECRET=$(COOKIE_SECRET) SESSION_SECRET=$(SESSION_SECRET) TWITTER_KEY=$(TWITTER_KEY) TWITTER_SECRET=$(TWITTER_SECRET)
+
+# one click deploy all
+one-click-deploy: deploy-mongodb deploy-node
+
+one-click-destroy: destroy-node destroy-mongodb
+
+deploy-node:
+	@echo ****************** Build image ***********************
+	docker build -t $(NODE_IMAGE_NAME) \
+		--file docker/node/Dockerfile .
+	@echo ****************** Run container *********************
+	docker run --name $(NODE_CONTAINER_NAME) \
+		-p 9999:3000 \
+		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
+		-it $(NODE_IMAGE_NAME)
+
+deploy-mongodb:
+	@echo ****************** Build image ***********************
+	docker build -t $(MONGO_IMAGE_NAME) \
+		--file docker/mongodb/Dockerfile .
+	@echo ****************** Run mongodb container *************
+	docker run --name $(MONGO_CONTAINER_NAME) \
+		-d -t $(MONGO_IMAGE_NAME) --auth
+	@sleep 2
+	@echo ****************** Config admin mongodb ********************
+	docker exec -it $(MONGO_CONTAINER_NAME) \
+		mongo admin --eval \
+		$(MONGO_ADD_ADMIN_EVAL) 
+	@echo ****************** add read and write user **********
+	docker exec -it $(MONGO_CONTAINER_NAME) \
+		mongo -u $(MONGO_ADMIN) -p $(MONGO_ADMIN_PWD) \
+		--authenticationDatabase \
+	   	admin --eval \
+		$(MONGO_ADD_BLOG_EVAL) 
+	@echo ****************** Init blog database ****************
+	docker exec -it $(MONGO_CONTAINER_NAME) \
+		mongoimport --username $(MONGO_BLOG_USER) \
+		--password $(MONGO_BLOG_PWD) \
+		--authenticationDatabase blog \
+		--db blog --collection users \
+		--type json --file users.json \
+		--jsonArray
+	docker exec -it $(MONGO_CONTAINER_NAME) \
+		mongoimport --username $(MONGO_BLOG_USER) \
+		--password $(MONGO_BLOG_PWD) \
+		--authenticationDatabase blog \
+		--db blog --collection articles \
+		--type json --file articles.json \
+		--jsonArray
+	docker restart $(MONGO_CONTAINER_NAME)
+
+destroy-mongodb:
+	@echo ***************** Kill process ***********************
+	@echo ***************** Remove container *******************
+	-docker kill $(MONGO_CONTAINER_NAME) 
+	docker rm -v $(MONGO_CONTAINER_NAME)
+	@echo ***************** Remove image ***********************
+	docker rmi $(MONGO_IMAGE_NAME)
+
+destroy-node:
+	@echo ***************** Kill process ***********************
+	@echo ***************** Remove container *******************
+	-docker kill $(NODE_CONTAINER_NAME) 
+	docker rm -v $(NODE_CONTAINER_NAME)
+	@echo ***************** Remove image ***********************
+	docker rmi $(NODE_IMAGE_NAME)
 
 insert-db:
-	echo ****************** Seeding blog **********************
+	@echo ****************** Seeding blog **********************
 	./db/seed.sh
 
 test:
-	clear
 	./node_modules/mocha/bin/mocha \
 		--reporter $(REPORTER) \
 		$(MOCHA_OPTS) \
 		tests/*.js
 
 debug-test:
-	clear
 	./node_modules/mocha/bin/mocha \
 		$(MOCHA_OPTS) \
 		--debug-brk \
@@ -34,4 +121,4 @@ inspect:
 start:
 	$(PROCESS_ENV) node ./bin/debug
 
-.PHONY: test insert-db debug inspect start debug-test
+.PHONY: test insert-db debug inspect start debug-test deploy-mongodb destroy-mongodb deploy-node one-click-deploy
