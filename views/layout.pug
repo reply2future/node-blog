@@ -9,16 +9,16 @@ html
 		link(rel="stylesheet", href="/css/style.css")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 	body
+		block headers
+			nav.navbar.navbar-default.navbar-fixed-top
+				include includes/menu
 		#wrap
 			.container
-				h1.page-header= appTitle
+				h1.page-header -Now or never-
 				p.lead Welcome to my blog! BY&nbsp;
 					a(href="https://github.com/feimeizhan") @feimeizhan
 					|. Please enjoy.
 				block page
-				block header
-					div
-						include includes/menu
 				block alert
 					div.alert.alert-warning.hidden
 				.content
