@@ -1,4 +1,4 @@
-# node blog
+# Node Blog
 A blog use Node.js,Mongodb,and deployed with docker.
 
 # Build
@@ -8,6 +8,9 @@ A blog use Node.js,Mongodb,and deployed with docker.
 All build step is in the **Makefile** file,you just need to run `make one-click-deploy` in the project root directory and wait a minutes.
 
 All done!Check http://localhost:9999
+
+# Demo
+[My Blog](http://reply2future.pw:9999)
 
 ## Reference
 1.[Dockerizing a Node.js web app](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
