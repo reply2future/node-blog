@@ -9,6 +9,9 @@ block content
 		| to post and publish.
 	else
 		each article, index in articles
-			div
-				h2
-					a(href="/articles/" + article.slug)= article.title
+			.list-group
+				a.list-group-item.list-group-item-action.flex-column.align-items-start(href="/articles/" + article.slug)
+					.d-flex.w-100.justify-content-between
+						h3.mb-1= article.title
+						small.text-muted= article.lastModified
+					p.mb-1= "slug:" + article.slug

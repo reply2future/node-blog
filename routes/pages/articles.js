@@ -26,15 +26,13 @@ exports.postArticle = function(req, res, next){
 		return res.render('post', { error: 'Please fill title, slug and text.'});
 	}
 
-	let article = {
+	req.collections.articles.insert({
 		title: req.body.title,
 		slug: req.body.slug,
 		text: req.body.text,
-		// TODO:attribute get
-		published: false
-	};
-
-	req.collections.articles.insert(article, function(error, articleResponse){
+		published: false,
+		lastModified: new Date()
+	}, function(error, articleResponse){
 		if(error)
 			return next(error);
 
