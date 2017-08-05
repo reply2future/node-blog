@@ -54,8 +54,6 @@ app.use(function(req, res, next){
 });
 
 const authorize = function(req, res, next){
-	// TODO:debug post
-	return next();
 	if(req.session && req.session.admin)
 		return next();
 	else
