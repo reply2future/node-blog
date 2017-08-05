@@ -22,6 +22,7 @@ exports.getPostView = function(req, res, next){
  */
 
 exports.postArticle = function(req, res, next){
+	debugger
 	if(!req.body.title || !req.body.slug || !req.body.text){
 		return res.render('post', { error: 'Please fill title, slug and text.'});
 	}

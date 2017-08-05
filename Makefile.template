@@ -8,8 +8,8 @@ COOKIE_SECRET =
 SESSION_SECRET = 
 # mongo information
 MONGO_ADMIN = 
-MONGO_ADMIN_PWD =
-MONGO_BLOG_USER = 
+MONGO_ADMIN_PWD = 
+MONGO_BLOG_USER =
 MONGO_BLOG_PWD = 
 # *******************************************************
 
@@ -42,7 +42,7 @@ deploy-node:
 	docker run --name $(NODE_CONTAINER_NAME) \
 		-p 9999:3000 \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
-		-it $(NODE_IMAGE_NAME)
+		-d $(NODE_IMAGE_NAME)
 
 deploy-mongodb:
 	@echo ****************** Build image ***********************
@@ -113,10 +113,6 @@ debug-test:
 
 debug:
 	$(PROCESS_ENV) node debug bin/debug
-
-# Deprecated feature
-inspect:
-	$(PROCESS_ENV) node --inspect ./bin/debug
 
 start:
 	$(PROCESS_ENV) node ./bin/debug

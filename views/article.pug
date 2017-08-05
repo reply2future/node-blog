@@ -1,6 +1,15 @@
 extends layout
-
+block append link
+	link(href="/lib/quill/quill.bubble.css", rel="stylesheet")
+block append script
+	script(src="/lib/quill/quill.js", type="text/javascript")
 block content
 	p
 		h1= title
-		p= text
+		#editor
+	script.
+		var quill = new Quill('#editor', {
+			theme: 'bubble',
+			readOnly: true
+		});
+		quill.setContents(!{text});
