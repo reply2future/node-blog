@@ -12,7 +12,7 @@ describe('Users module', function(){
 
 		it('should forbid to access the page', function(done){
 			superagent
-				.get('http://localhost:' + app.port + '/articles/admin')
+				.get('http://localhost:' + app.port + '/users/admin')
 				.end(function(err, res){
 					expect(res.status).to.equal(401);
 					done();
@@ -34,7 +34,7 @@ describe('Users module', function(){
 
 		it('should access the admin page', function(done){
 			authorizedUser
-				.get('http://localhost:' + app.port + '/articles/admin')
+				.get('http://localhost:' + app.port + '/users/admin')
 				.end(function(err, res){
 					expect(res.status).to.equal(200);
 					done();

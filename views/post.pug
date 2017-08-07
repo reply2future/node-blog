@@ -7,10 +7,9 @@ block page
 	- var menu = 'post'
 block content
 	h2 Post an article
-	if error
-		#info-alert.alert.alert-warning(role="alert")= error
+	#info-alert.alert(role="alert")
 	.col-md-8
-		form#article-form(action="/articles/post", method="POST", role="form")
+		form#article-form(role="form")
 			.form-group
 				label(for="title") Title
 				input#title.form-control(name="title", type="text", placeholder="Javascript is good")
@@ -19,8 +18,11 @@ block content
 				input#slug.form-control(name="slug", type="text", placeholder="js-good")
 				span.help-block This string will be used in the URL.
 			.form-group
+				label(for="tags") Tags
+				input#tags.form-control(name="tags", type="text", placeholder="js")
+				span.help-block This string will be used in the Category,and seperate with comma(,).
+			.form-group
 				label(for="text") Text
-				input(name="text", type="hidden")
 				#editor
 					p Javascript is the best program language of the world.
 			p
@@ -38,12 +40,43 @@ block content
 				]
 			}
 		});
+		$('#article-form').submit(function(event){
+			// stop form from  submitting normally
+			event.preventDefault();
 
-		var form = document.querySelector('#article-form');
-		form.onsubmit = function(){
-			alert('test');
-			var textInput = document.querySelector('input[name=text]');
-			var text = JSON.stringify(quill.getContents());
-			textInput.value = text;
-			return true;
-		};
+			// get values
+			var $form = $(this),
+				url = $form.attr('action'),
+				titleValue = $form.find('input[name=title]').val(),
+				slugValue = $form.find('input[name=slug]').val(),
+				tagsValue = $form.find('input[name=tags]').val().split(',');
+
+			var sendData = {
+				title: titleValue,
+				slug: slugValue,
+				tags: tagsValue,
+				text: quill.getContents()
+			};
+		
+			let alert = $('#info-alert');
+			$.ajax({
+				url: '/articles',
+				type: 'POST',
+				data: JSON.stringify(sendData), 
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+			}).done(function(doneData, doneStatus, doneXHR){
+				if(doneXHR.status == 201){
+					// create successfully
+					alert.addClass('alert alert-success');
+				} else {
+					// TODO: other status
+					alert.addClass('alert alert-warning');
+				}
+				alert.append(doneData.message);
+			}).fail(function(failXHR, failStatus, errorThrow){
+				alert.addClass('alert alert-danger').append(failXHR.responseJSON.message);
+			}).always(function(){
+				alert.show();
+			});
+		});

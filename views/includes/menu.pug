@@ -7,9 +7,9 @@
 				a(href="/") Home
 			if(admin || menu === "admin" || menu === "post")
 				li(class=(menu === "post")?"active":"")
-					a(href="/articles/post") Post
+					a(href="/articles") Post
 				li(class=(menu === "admin")?"active":"")
-					a(href="/articles/admin") Admin
+					a(href="/users/admin") Admin
 				li
 					a(href="/users/logout") Log out
 			else

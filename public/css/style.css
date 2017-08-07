@@ -48,6 +48,12 @@ body {
 #editor{
 	height: 130px;
 }
+#info-alert{
+	display: none;
+}
+#text-hidden{
+	display: none;
+}
 .glyphicon-remove,
 .glyphicon-pause,
 .glyphicon-play {

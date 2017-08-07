@@ -32,7 +32,7 @@ exports.postLogin = function(req, res, next){
 			return res.render('login', {error: 'Incorrect email and password combination.'});
 		req.session.user = user;
 		req.session.admin = user.admin;
-		res.redirect('/articles/admin');
+		res.redirect('/users/admin');
 	});
 };
 
@@ -46,4 +46,21 @@ exports.postLogin = function(req, res, next){
 exports.logout = function(req, res, next){
 	req.session.destroy();
 	res.redirect('/');
+};
+
+/*
+ * get admin view
+ *
+ * {
+ *   method: 'GET',
+ *   url: '/users/admin'
+ * }
+ */
+exports.getAdminView = function(req, res, next){
+	req.collections.articles.find({}, {sort:{_id: -1}}).toArray(function(error, articles){
+		if(error)
+			return next(error);
+
+		res.render('admin', { articles: articles });
+	});
 };

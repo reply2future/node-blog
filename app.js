@@ -60,20 +60,19 @@ const authorize = function(req, res, next){
 		return res.sendStatus(401);
 };
 
-debugger
-
 // page routes
 app.get(['/', '/index'], pages.index.getIndexView);
 app.get('/users/login', pages.users.getLoginView);
 app.post('/users/login', pages.users.postLogin);
 app.get('/users/logout', pages.users.logout);
-app.get('/articles/post', authorize, pages.articles.getPostView);
-app.post('/articles/post', authorize, pages.articles.postArticle);
-app.get('/articles/admin', authorize, pages.articles.getAdminView);
+app.get('/users/admin', authorize, pages.users.getAdminView);
+app.get('/articles', authorize, pages.articles.getPostView);
+app.post('/articles', authorize, pages.articles.postArticle);
 app.get('/articles/:slug', pages.articles.getArticleBySlug);
 
 
 // RESTful api
+// TODO:should add Authentication
 app.put('/api/articles/:id', api.articles.editArticleById);
 app.delete('/api/articles/:id', api.articles.delArticleById);
 app.get('/api/articles', api.articles.getAllArticles);

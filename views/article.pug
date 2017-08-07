@@ -6,10 +6,12 @@ block append script
 block content
 	p
 		h1= title
+		#text-hidden= JSON.stringify(text)
 		#editor
 	script.
 		var quill = new Quill('#editor', {
 			theme: 'bubble',
 			readOnly: true
 		});
-		quill.setContents(!{text});
+		var text = $('#text-hidden').text();
+		quill.setContents(JSON.parse(text));

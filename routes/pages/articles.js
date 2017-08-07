@@ -4,7 +4,7 @@
  * 
  * {
  *   method: 'GET',
- *   url: '/articles/post'
+ *   url: '/articles'
  * }
  */
 exports.getPostView = function(req, res, next){
@@ -13,23 +13,27 @@ exports.getPostView = function(req, res, next){
 };
 
 /*
+ * Deprecated: Please use /api/articles instead.
+ *
  * post article
  *
  * {
  *   method: 'POST',
- *   url: '/articles/post'
+ *   url: '/articles'
  * }
  */
 
 exports.postArticle = function(req, res, next){
-	debugger
+	// return res.status(403).json({ message: ' Deprecated: Please use /api/articles instead.'});
+
 	if(!req.body.title || !req.body.slug || !req.body.text){
-		return res.render('post', { error: 'Please fill title, slug and text.'});
+		return res.status(400).json({ message: 'Please fill title, slug and text.'});
 	}
 
 	req.collections.articles.insert({
 		title: req.body.title,
 		slug: req.body.slug,
+		tags: req.body.tags,
 		text: req.body.text,
 		published: false,
 		lastModified: new Date()
@@ -37,24 +41,7 @@ exports.postArticle = function(req, res, next){
 		if(error)
 			return next(error);
 
-		res.render('post', { error: 'Article was added. Publish it on Admin page.'});
-	});
-};
-
-/*
- * get admin view
- *
- * {
- *   method: 'GET',
- *   url: '/articles/admin'
- * }
- */
-exports.getAdminView = function(req, res, next){
-	req.collections.articles.find({}, {sort:{_id: -1}}).toArray(function(error, articles){
-		if(error)
-			return next(error);
-
-		res.render('admin', { articles: articles });
+		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
 	});
 };
 
@@ -68,7 +55,7 @@ exports.getAdminView = function(req, res, next){
  */
 exports.getArticleBySlug = function(req, res, next){
 	if(!req.params.slug)
-		return next(new Error('No article slug.'));
+		return res.status(400).json({message: 'No article slug.'});
 
 	req.collections.articles.findOne({slug: req.params.slug}, function(error, article){
 		if(error)
@@ -76,6 +63,7 @@ exports.getArticleBySlug = function(req, res, next){
 
 		if(!article || !article.published)
 			return res.sendStatus(404);
+		debugger
 		res.render('article', article);
 	});
 };
