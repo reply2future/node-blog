@@ -11,6 +11,14 @@ html,
 body {
 	height: 100%;
 }
+hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #ccc;
+	margin: 1em 0;
+	padding: 0;
+}
 .navbar-fixed-top{
 	min-width: 970px;
 }
@@ -49,9 +57,6 @@ body {
 	height: 130px;
 }
 #info-alert{
-	display: none;
-}
-#text-hidden{
 	display: none;
 }
 .glyphicon-remove,
