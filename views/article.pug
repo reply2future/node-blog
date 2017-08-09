@@ -6,7 +6,7 @@ block append script
 block content
 	p
 		h1= title
-		.invisible= JSON.stringify(text)
+		#hidden-text.hidden= JSON.stringify(text)
 		#other-info
 			span.text-muted tags:
 				each value, index in tags
@@ -20,5 +20,5 @@ block content
 			theme: 'bubble',
 			readOnly: true
 		});
-		var text = $('.invisible').text();
+		var text = $('#hidden-text').text();
 		quill.setContents(JSON.parse(text));
