@@ -10,8 +10,12 @@ SESSION_SECRET =
 MONGO_ADMIN = 
 MONGO_ADMIN_PWD = 
 MONGO_BLOG_USER =
-MONGO_BLOG_PWD = 
+MONGO_BLOG_PWD =
 # *******************************************************
+
+# some variable
+CUR_DIR := $(PWD)
+DB_DIR := $(CUR_DIR)/db
 
 MONGO_ADD_ADMIN_EVAL = "db.createUser({ user: '$(MONGO_ADMIN)', pwd: '$(MONGO_ADMIN_PWD)', roles: [{ role: 'userAdminAnyDatabase', db: 'admin' } ] });"
 MONGO_ADD_BLOG_EVAL = "db = db.getSiblingDB('blog'); db.createUser({ user: '$(MONGO_BLOG_USER)', pwd: '$(MONGO_BLOG_PWD)', roles: [{ role: 'readWrite', db: 'blog' } ] });"
@@ -23,35 +27,60 @@ MONGO_CONTAINER_NAME = mongodb-blog
 NODE_LINK_MONGO_ALIAS = mongodb-blog
 NODE_IMAGE_NAME = node-env
 NODE_CONTAINER_NAME = node-blog
+# make test easy
+NODE_DEBUG_IMAGE_NAME = node-dev-env
+NODE_DEBUG_CONTAINER_NAME = node-blog-debug
+NODE_PORT = 9999
+NODE_DEBUG_PORT = 2333
 
 # options
 REPORTER = list
 MOCHA_OPTS = --ui bdd -c
 PROCESS_ENV = PORT=3000 MONGOHQ_URL=mongodb://$(MONGO_BLOG_USER):$(MONGO_BLOG_PWD)@$(NODE_LINK_MONGO_ALIAS):27017/blog COOKIE_SECRET=$(COOKIE_SECRET) SESSION_SECRET=$(SESSION_SECRET) TWITTER_KEY=$(TWITTER_KEY) TWITTER_SECRET=$(TWITTER_SECRET)
 
+# clear docker container and image
+# first argument is image name and second argument is container name
+define dockerClear
+	@echo ***************** Kill process ***********************
+	@echo ***************** Remove container *******************
+	-docker kill $(2) 
+	docker rm -v $(2)
+	@echo ***************** Remove image ***********************
+	docker rmi $(1)
+endef
+
 # one click deploy all
-one-click-deploy: deploy-mongodb deploy-node
+one-click-deploy: docker-deploy-mongodb docker-deploy-node
 
-one-click-destroy: destroy-node destroy-mongodb
+one-click-destroy: docker-destroy-node docker-destroy-mongodb
 
-deploy-node:
+docker-deploy-node:
 	@echo ****************** Build image ***********************
 	docker build -t $(NODE_IMAGE_NAME) \
 		--file docker/node/Dockerfile .
 	@echo ****************** Run container *********************
 	docker run --name $(NODE_CONTAINER_NAME) \
-		-p 9999:3000 \
+		-p $(NODE_PORT):3000 \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-d $(NODE_IMAGE_NAME)
 
-deploy-mongodb:
+docker-deploy-node-debug:
+	@echo ****************** Run container *********************
+	docker run --name $(NODE_DEBUG_CONTAINER_NAME) \
+		-p $(NODE_DEBUG_PORT):3000 \
+		-v $(CUR_DIR):/usr/src/app \
+		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
+		-it $(NODE_DEBUG_IMAGE_NAME)
+
+docker-deploy-mongodb:
 	@echo ****************** Build image ***********************
 	docker build -t $(MONGO_IMAGE_NAME) \
 		--file docker/mongodb/Dockerfile .
 	@echo ****************** Run mongodb container *************
 	docker run --name $(MONGO_CONTAINER_NAME) \
+		-v $(DB_DIR):/usr/src/sharedir \
 		-d -t $(MONGO_IMAGE_NAME) --auth
-	@sleep 2
+	@sleep 1
 	@echo ****************** Config admin mongodb ********************
 	docker exec -it $(MONGO_CONTAINER_NAME) \
 		mongo admin --eval \
@@ -79,21 +108,28 @@ deploy-mongodb:
 		--jsonArray
 	docker restart $(MONGO_CONTAINER_NAME)
 
-destroy-mongodb:
-	@echo ***************** Kill process ***********************
-	@echo ***************** Remove container *******************
-	-docker kill $(MONGO_CONTAINER_NAME) 
-	docker rm -v $(MONGO_CONTAINER_NAME)
-	@echo ***************** Remove image ***********************
-	docker rmi $(MONGO_IMAGE_NAME)
+docker-destroy-mongodb: docker-backup-db
+	$(call dockerClear, $(MONGO_IMAGE_NAME), $(MONGO_CONTAINER_NAME))
 
-destroy-node:
-	@echo ***************** Kill process ***********************
-	@echo ***************** Remove container *******************
-	-docker kill $(NODE_CONTAINER_NAME) 
-	docker rm -v $(NODE_CONTAINER_NAME)
-	@echo ***************** Remove image ***********************
-	docker rmi $(NODE_IMAGE_NAME)
+docker-destroy-node:
+	$(call dockerClear, $(NODE_IMAGE_NAME), $(NODE_CONTAINER_NAME))
+
+docker-backup-db:
+	@echo ****************** backup blog data ****************
+	docker exec -it $(MONGO_CONTAINER_NAME) \
+		mongoexport --username $(MONGO_BLOG_USER) \
+		--password $(MONGO_BLOG_PWD) \
+		--authenticationDatabase blog \
+		--db blog --collection users \
+		--out users.json \
+		--jsonArray
+	docker exec -it $(MONGO_CONTAINER_NAME) \
+		mongoexport --username $(MONGO_BLOG_USER) \
+		--password $(MONGO_BLOG_PWD) \
+		--authenticationDatabase blog \
+		--db blog --collection articles \
+		--out articles.json \
+		--jsonArray
 
 insert-db:
 	@echo ****************** Seeding blog **********************
@@ -117,4 +153,4 @@ debug:
 start:
 	$(PROCESS_ENV) node ./bin/debug
 
-.PHONY: test insert-db debug inspect start debug-test deploy-mongodb destroy-mongodb deploy-node one-click-deploy
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug
