@@ -60,6 +60,33 @@ const authorize = function(req, res, next){
 		return res.sendStatus(401);
 };
 
+// article arguments check
+const checkArticleArgs = function(req, res, next){
+	if(!req.body.article.title || 
+			!req.body.article.slug || 
+			!req.body.article.text ||
+			!req.body.article.tags){
+		return res.status(400).json({ message: 'Please fill title, slug and text.'});
+	} else {
+		return next();
+	}
+};
+// merge arguments so it could be easy to operate with mongodb
+const mergeArticleArgs = function(req, res, next){
+	if(!req.body.article){
+		req.body.article = {
+			title: req.body.title,
+			slug: req.body.slug,
+			text: req.body.text,
+			tags: req.body.tags,
+			published: req.body.published,
+		};
+	}
+
+	req.body.article.lastModified = new Date();
+	return next();
+}
+
 // page routes
 app.get(['/', '/index'], pages.index.getIndexView);
 app.get('/users/login', pages.users.getLoginView);
@@ -67,20 +94,18 @@ app.post('/users/login', pages.users.postLogin);
 app.get('/users/logout', pages.users.logout);
 app.get('/users/admin', authorize, pages.users.getAdminView);
 app.get('/articles', authorize, pages.articles.getPostView);
-app.post('/articles', authorize, pages.articles.postArticle);
+app.post('/articles', authorize, mergeArticleArgs, checkArticleArgs, pages.articles.postArticle);
 app.get('/articles/:slug', pages.articles.getArticleBySlug);
 
 
 // RESTful api
 // TODO:should add Authentication
-app.put('/api/articles/:id', api.articles.editArticleById);
-app.delete('/api/articles/:id', api.articles.delArticleById);
+app.put('/api/articles/:id', authorize, api.articles.editArticleById);
+app.delete('/api/articles/:id', authorize, api.articles.delArticleById);
 app.get('/api/articles', api.articles.getAllArticles);
-app.post('/api/articles', api.articles.postArticle);
+app.post('/api/articles', authorize, mergeArticleArgs, checkArticleArgs, api.articles.postArticle);
 
 app.use(function(req, res){
 	res.sendStatus(404);
 });
 module.exports = app;
-
-

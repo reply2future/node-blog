@@ -26,9 +26,9 @@ describe('server', function(){
 				.end(function(err, res){
 					seedArticles.forEach(function(item, index, list){
 						if(item.published){
-							expect(res.text).to.contain('<h2><a href="/articles/' + item.slug + '">' + item.title);
+							expect(res.text).to.contain(item.title);
 						} else {
-							expect(res.text).not.to.contain('<h2><a href="/articles/' + item.slug + '">' + item.title);
+							expect(res.text).not.to.contain(item.title);
 						}
 					});
 
@@ -46,7 +46,7 @@ describe('server', function(){
 					.get('http://localhost:' + app.port + '/articles/' + seedArticles[index].slug)
 					.end(function(err, res){
 						if(item.published){
-							expect(res.text).to.contain(seedArticles[index].text);
+							expect(res.text).to.contain(seedArticles[index].title);
 						}else{
 							expect(res.status).to.be(404);
 						}
@@ -58,10 +58,9 @@ describe('server', function(){
 					});
 			});
 		});
-
-		after(function(){
-			app.shutdown();
-		});
-
+	})
+	
+	after(function(){
+		app.shutdown();
 	})
 })

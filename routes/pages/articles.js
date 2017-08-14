@@ -63,7 +63,6 @@ exports.getArticleBySlug = function(req, res, next){
 
 		if(!article || !article.published)
 			return res.sendStatus(404);
-		debugger
 		res.render('article', article);
 	});
 };

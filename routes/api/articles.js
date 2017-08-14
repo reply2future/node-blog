@@ -1,3 +1,4 @@
+const mongo = require('mongoskin');
 /*
  * get all articles
  * {
@@ -20,21 +21,10 @@ exports.getAllArticles = function(req, res, next){
  * }
  */
 exports.postArticle = function(req, res, next){
-	if(!req.body.article ||
-			!req.body.article.title || 
-			!req.body.article.slug || 
-			!req.body.article.text)
-		return res.status(400).json({ message: 'Please fill title, slug and text.'});
-
-	let article = req.body.article;
-	article.published = false;
-	article.lastModified = new Date();
-	req.collections.articles.insert(article, function(error, articleResponse){
+	req.body.article.published = false;
+	req.collections.articles.insert(req.body.article, function(error, articleResponse){
 		if(error)
 			return next(error);
-		// debug
-		console.log('insert response:' + articleResponse);
-
 		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
 	});
 };
@@ -48,13 +38,14 @@ exports.postArticle = function(req, res, next){
  */
 exports.editArticleById = function(req, res, next){
 	if(!req.params.id)
-		return next(new Error('No article ID.'));
+		return res.status(400).json({message:'No article ID.'});
 
-	req.collections.articles.updateById(req.params.id, {$set: req.body.article}, function(error, count){
+	req.collections.articles.updateById(req.params.id, {$set: req.body.article}, function(error, result){
 		if(error)
 			return next(error);
-
-		res.status(200).json({affectedCount: count});
+		res.status(200).json({
+			message: result
+		});
 	});
 };
 
@@ -67,11 +58,13 @@ exports.editArticleById = function(req, res, next){
  */
 exports.delArticleById = function(req, res, next){
 	if(!req.params.id)
-		return next(new Error('No article ID.'));
+		return res.status(400).json({message:'No article ID.'});
 
 	req.collections.articles.removeById(req.params.id, function(error, count){
 		if(error)
 			return next(error);
-		res.status(200).json({affectedCount: count});
+		res.status(200).json({
+			message: count
+		});
 	});
 };
