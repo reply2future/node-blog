@@ -19,32 +19,9 @@ hr {
 	margin: 1em 0;
 	padding: 0;
 }
-.navbar-fixed-top{
-	min-width: 970px;
-}
-.container{
-	width: 970px;
-	max-width: none !important;
-}
-.container .navbar-header{
-	margin-right: 0;
-	margin-left: 0;
-}
-.navbar-header {
-	float: left;
-}
-.navbar-brand {
-	margin-left: -15px;
-}
-.navbar-nav {
-	float: left;
-	margin: 0;
-}
-.navbar-nav > li > a {
-	padding: 15px;
-}
-.navbar-nav.navbar-right {
-	float: right;
+.mx-1 {
+	margin-left: 2px;
+	margin-right: 2px;
 }
 .form-group{
 	margin-right: 10px;
@@ -55,7 +32,7 @@ hr {
 }
 #editor{
 	height: auto;
-	min-height: 100%;
+	min-height: 375px;
 	padding: 10px;
 }
 #info-alert{

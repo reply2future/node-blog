@@ -1,21 +1,26 @@
-.container
+.container-fluid
 	.navbar-header
+		button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#navbar-collapse-collection", aria-expanded="false")
+			span.sr-only Toggle navigation
+			span.icon-bar
+			span.icon-bar
+			span.icon-bar
 		a.navbar-brand(href="/")= appTitle
-	#navbar
+	.collapse.navbar-collapse#navbar-collapse-collection
 		ul.nav.navbar-nav
-			li(class=(menu === "index")?"active":"")
+			li(class=(menu === 'index')?"active":"")
 				a(href="/") Home
-			if(admin || menu === "admin" || menu === "post")
-				li(class=(menu === "post")?"active":"")
+			if(admin || menu === 'admin' || menu === 'post')
+				li(class=(menu === 'post')?"active":"")
 					a(href="/articles") Post
-				li(class=(menu === "admin")?"active":"")
+				li(class=(menu === 'admin')?"active":"")
 					a(href="/users/admin") Admin
 				li
 					a(href="/users/logout") Log out
 			else
-				li(class=(menu === "login")?"active":"")
+				li(class=(menu === 'login')?"active":"")
 					a(href="/users/login") Log in
-		form.navbar-form.navbar-right
+		form.navbar-form.navbar-right(role="search")
 			.form-group
 				input.form-control(type="text", placeholder="Search")
 			button.btn.btn-default(type="submit") Search

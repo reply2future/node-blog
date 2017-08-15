@@ -2,15 +2,12 @@ doctype html
 html
 	head
 		title= appTitle
-		block script
-			script(type="text/javascript", src="/lib/jquery/jquery.min.js")
-			script(type="text/javascript", src="/lib/bootstrap/js/bootstrap.min.js")
 		block link
 			link(rel="stylesheet", href="/lib/bootstrap/css/bootstrap.min.css")
-			link(rel="stylesheet", href="/lib/bootstrap/css/bootstrap-theme.min.css")
 			link(rel="stylesheet", href="/css/style.css")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		meta(name="viewport", content="width=device-width, initial-scale=1")
 	body
+		block page
 		block headers
 			nav.navbar.navbar-default.navbar-fixed-top
 				include includes/menu
@@ -20,7 +17,6 @@ html
 				p.lead Welcome to my blog! BY&nbsp;
 					a(href="https://github.com/feimeizhan") @feimeizhan
 					|. Please enjoy.
-				block page
 				block alert
 					div.alert.alert-warning.hidden
 				.content
@@ -33,3 +29,6 @@ html
 						a(href="https://github.com/feimeizhan/node-blog/issues") Github
 						|.
 
+		block script
+			script(type="text/javascript", src="/lib/jquery/jquery.min.js" async)
+			script(type="text/javascript", src="/lib/bootstrap/js/bootstrap.min.js" async)

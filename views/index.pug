@@ -11,8 +11,8 @@ block content
 		each article, index in articles
 			.list-group
 				a.list-group-item(href="/articles/" + article.slug)
-					h3.list-group-item-heading= article.title
+					h4.list-group-item-heading= article.title
 					small.pull-right.text-muted= article.lastModified.toDateString()
 					p.text-muted tags: 
 						each value, index in article.tags
-							span.label.label-default= value
+							span.mx-1.label.label-default= value

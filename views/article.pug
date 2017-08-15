@@ -1,24 +1,18 @@
 extends layout
 block append link
 	link(href="/lib/quill/quill.bubble.css", rel="stylesheet")
-block append script
-	script(src="/lib/quill/quill.js", type="text/javascript")
 block content
 	p
-		h1= title
+		h3= title
 		#hidden-text.hidden= JSON.stringify(text)
 		#other-info
 			span.text-muted tags:
 				each value, index in tags
-					span.label.label-default= value
+					span.mx-1.label.label-default= value
 			span.text-muted create time: 
 			span.text-muted= lastModified.toDateString()
 		hr
 		#editor
-	script.
-		var quill = new Quill('#editor', {
-			theme: 'bubble',
-			readOnly: true
-		});
-		var text = $('#hidden-text').text();
-		quill.setContents(JSON.parse(text));
+block append script
+	script(src="/lib/quill/quill.js", type="text/javascript")
+	script(src="/js/article.js", type="text/javascript" async)
