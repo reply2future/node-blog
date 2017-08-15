@@ -10,7 +10,7 @@ exports.getAllArticles = function(req, res, next){
 	req.collections.articles.find({}).toArray(function(error, articles){
 		if(error)
 			return next(error);
-		res.send({articles:articles});
+		res.status(200).json({message:articles});
 	});
 };
 /*

@@ -2,12 +2,24 @@ const app = require('../bin/debug'),
 	  superagent = require('superagent'),
 	  expect = require('expect.js');
 
-const seedArticles = require('../db/articles.json');
-
 describe('server', function(){
+
+	var articles;
 
 	before(function(){
 		app.boot();
+	})
+
+	describe('articles data fetch', function(){
+		it('should get all articles successfully', function(done){
+			superagent
+				.get('http://localhost:' + app.port + '/api/articles')
+				.end(function(err, res){
+					expect(res.status).to.equal(200);
+					articles = res.body.message;
+					done();
+				});
+		})
 	})
 
 	describe('homepage', function(){
@@ -24,7 +36,7 @@ describe('server', function(){
 			superagent
 				.get('http://localhost:' + app.port)
 				.end(function(err, res){
-					seedArticles.forEach(function(item, index, list){
+					articles.forEach(function(item, index, list){
 						if(item.published){
 							expect(res.text).to.contain(item.title);
 						} else {
@@ -40,13 +52,13 @@ describe('server', function(){
 
 	describe('article page', function(){
 		it('should display text', function(done){
-			let n = seedArticles.length;
-			seedArticles.forEach(function(item, index, list){
+			let n = articles.length;
+			articles.forEach(function(item, index, list){
 				superagent
-					.get('http://localhost:' + app.port + '/articles/' + seedArticles[index].slug)
+					.get('http://localhost:' + app.port + '/articles/' + articles[index].slug)
 					.end(function(err, res){
 						if(item.published){
-							expect(res.text).to.contain(seedArticles[index].title);
+							expect(res.text).to.contain(articles[index].title);
 						}else{
 							expect(res.status).to.be(404);
 						}
