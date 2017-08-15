@@ -5,12 +5,12 @@
 TWITTER_KEY = 
 TWITTER_SECRET = 
 COOKIE_SECRET = 
-SESSION_SECRET = 
+SESSION_SECRET =
 # mongo information
 MONGO_ADMIN = 
 MONGO_ADMIN_PWD = 
-MONGO_BLOG_USER =
-MONGO_BLOG_PWD =
+MONGO_BLOG_USER = 
+MONGO_BLOG_PWD = 
 # *******************************************************
 
 # some variable
@@ -30,8 +30,8 @@ NODE_CONTAINER_NAME = node-blog
 # make test easy
 NODE_DEBUG_IMAGE_NAME = node-dev-env
 NODE_DEBUG_CONTAINER_NAME = node-blog-debug
-NODE_PORT = 9999
-NODE_DEBUG_PORT = 2333
+LOCAL_NODE_PORT = 9999
+LOCAL_NODE_DEBUG_PORT = 2333
 
 # options
 REPORTER = list
@@ -60,14 +60,14 @@ docker-deploy-node:
 		--file docker/node/Dockerfile .
 	@echo ****************** Run container *********************
 	docker run --name $(NODE_CONTAINER_NAME) \
-		-p $(NODE_PORT):3000 \
+		-p $(LOCAL_NODE_PORT):3000 \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-d $(NODE_IMAGE_NAME)
 
 docker-deploy-node-debug:
 	@echo ****************** Run container *********************
 	docker run --name $(NODE_DEBUG_CONTAINER_NAME) \
-		-p $(NODE_DEBUG_PORT):3000 \
+		-p $(LOCAL_NODE_DEBUG_PORT):3000 \
 		-v $(CUR_DIR):/usr/src/app \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-it $(NODE_DEBUG_IMAGE_NAME)
@@ -136,15 +136,15 @@ insert-db:
 	./db/seed.sh
 
 test:
-	./node_modules/mocha/bin/mocha \
+	$(PROCESS_ENV) ./node_modules/mocha/bin/mocha \
 		--reporter $(REPORTER) \
 		$(MOCHA_OPTS) \
 		tests/*.js
 
 debug-test:
-	./node_modules/mocha/bin/mocha \
+	$(PROCESS_ENV) ./node_modules/mocha/bin/mocha \
 		$(MOCHA_OPTS) \
-		--debug-brk \
+		debug \
 		tests/*.js
 
 debug:
@@ -153,4 +153,11 @@ debug:
 start:
 	$(PROCESS_ENV) node ./bin/debug
 
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug
+# should parse the name of blog container,for example $(NODE_CONTAINER_NAME)
+docker-start-blog:
+	docker exec -it ${BLOG} make start
+
+docker-test-blog:
+	docker exec -it ${BLOG} make test
+
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-start-blog docker-test-blog
