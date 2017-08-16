@@ -5,7 +5,9 @@ const express = require('express'),
 	  logger = require('morgan'),
 	  cookieParser = require('cookie-parser'),
 	  bodyParser = require('body-parser'),
-	  session = require('express-session');
+	  session = require('express-session'),
+	  FileStore = require('session-file-store')(session),
+	  compression = require('compression');
 
 const routes = require('./routes/exports'),
 	  pages = routes.pages,
@@ -14,19 +16,29 @@ const routes = require('./routes/exports'),
 const app = express();
 app.locals.appTitle = 'node-blog';
 
+app.set('trust proxy', true);
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'));
+
+var fileStoreOpt = {
+	path: '/tmp/blog-session/',
+	retries: 0
+};
+
 app.use(session({
 	secret: process.env.SESSION_SECRET || 'your session secret',
 	resave: false,
-	saveUninitialized: false
+	saveUninitialized: false,
+	store: new FileStore(fileStoreOpt)
 }));
 // through docker --link the mongodb container
 // access mongodb using docker container alias
@@ -79,13 +91,13 @@ const mergeArticleArgs = function(req, res, next){
 			slug: req.body.slug,
 			text: req.body.text,
 			tags: req.body.tags,
-			published: req.body.published,
+			published: req.body.published
 		};
 	}
 
 	req.body.article.lastModified = new Date();
 	return next();
-}
+};
 
 // page routes
 app.get(['/', '/index'], pages.index.getIndexView);

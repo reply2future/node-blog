@@ -3,14 +3,14 @@
 # you should fill the variable
 # *******************************************************
 TWITTER_KEY = 
-TWITTER_SECRET = 
-COOKIE_SECRET = 
+TWITTER_SECRET =
+COOKIE_SECRET =
 SESSION_SECRET =
 # mongo information
 MONGO_ADMIN = 
 MONGO_ADMIN_PWD = 
-MONGO_BLOG_USER = 
-MONGO_BLOG_PWD = 
+MONGO_BLOG_USER =
+MONGO_BLOG_PWD =
 # *******************************************************
 
 # some variable
@@ -36,6 +36,7 @@ LOCAL_NODE_DEBUG_PORT = 2333
 # options
 REPORTER = list
 MOCHA_OPTS = --ui bdd -c
+NODE_PRO_ENV = NODE_ENV=production
 PROCESS_ENV = PORT=3000 MONGOHQ_URL=mongodb://$(MONGO_BLOG_USER):$(MONGO_BLOG_PWD)@$(NODE_LINK_MONGO_ALIAS):27017/blog COOKIE_SECRET=$(COOKIE_SECRET) SESSION_SECRET=$(SESSION_SECRET) TWITTER_KEY=$(TWITTER_KEY) TWITTER_SECRET=$(TWITTER_SECRET)
 
 # clear docker container and image
@@ -148,16 +149,15 @@ debug-test:
 		tests/*.js
 
 debug:
-	$(PROCESS_ENV) node debug bin/debug
+	$(PROCESS_ENV) node debug bin/www
 
+# production environment
 start:
-	$(PROCESS_ENV) node ./bin/debug
+	$(NODE_PRO_ENV) $(PROCESS_ENV) node ./bin/www
 
-# should parse the name of blog container,for example $(NODE_CONTAINER_NAME)
-docker-start-blog:
-	docker exec -it ${BLOG} make start
+docker-access-blog-mongodb:
+	docker exec -it ${MONGO_CONTAINER_NAME} \
+		mongo -u ${MONGO_BLOG_USER} \
+		-p ${MONGO_BLOG_PWD} blog
 
-docker-test-blog:
-	docker exec -it ${BLOG} make test
-
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-start-blog docker-test-blog
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb

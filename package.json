@@ -16,6 +16,7 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "bootstrap": "^3.3.7",
+    "compression": "^1.7.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
     "express-session": "^1.15.4",
@@ -24,7 +25,8 @@
     "mongoskin": "^2.1.0",
     "morgan": "^1.8.2",
     "pug": "^2.0.0-rc.2",
-    "quill": "^1.3.0"
+    "quill": "^1.3.0",
+    "session-file-store": "^1.1.2"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
