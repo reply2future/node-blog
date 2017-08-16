@@ -9,6 +9,16 @@ All build step is in the **Makefile** file,you just need to run `make one-click-
 
 All done!Check http://localhost:9999
 
+# Config
+
+## Disqus comment plugin
+
+**IMPORTANT:** use your own **embed.js** url to replace mine in the *views/article.pug*
+
+```
+s.src = 'https://reply2future-pw.disqus.com/embed.js';
+```
+
 # Demo
 [My Blog](http://reply2future.pw:9999)
 
