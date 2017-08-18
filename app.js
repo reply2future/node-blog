@@ -4,10 +4,10 @@ const express = require('express'),
 	  path = require('path'),
 	  logger = require('morgan'),
 	  cookieParser = require('cookie-parser'),
-	  bodyParser = require('body-parser'),
 	  session = require('express-session'),
 	  FileStore = require('session-file-store')(session),
-	  compression = require('compression');
+//	  compression = require('compression'),
+	  bodyParser = require('body-parser');
 
 const routes = require('./routes/exports'),
 	  pages = routes.pages,
@@ -21,8 +21,8 @@ app.set('trust proxy', true);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(compression());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(compression());
+// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -111,7 +111,6 @@ app.get('/articles/:slug', pages.articles.getArticleBySlug);
 
 
 // RESTful api
-// TODO:should add Authentication
 app.put('/api/articles/:id', authorize, api.articles.editArticleById);
 app.delete('/api/articles/:id', authorize, api.articles.delArticleById);
 app.get('/api/articles', api.articles.getAllArticles);

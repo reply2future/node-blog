@@ -1,6 +1,6 @@
 extends layout
 block append link
-	link(href="/lib/quill/quill.snow.css", rel="stylesheet")
+	link(href="/static/lib/quill/quill.snow.css", rel="stylesheet")
 block page
 	- var menu = 'post'
 block content
@@ -26,5 +26,5 @@ block content
 				button.btn.btn-primary(type="submit") Save
 
 block append script
-	script(src="/lib/quill/quill.js", type="text/javascript")
-	script(src="/js/post.js", type="text/javascript" defer)
+	script(src="/static/lib/quill/quill.js", type="text/javascript")
+	script(src="/static/js/post.js", type="text/javascript" defer)

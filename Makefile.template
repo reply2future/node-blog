@@ -3,8 +3,8 @@
 # you should fill the variable
 # *******************************************************
 TWITTER_KEY = 
-TWITTER_SECRET =
-COOKIE_SECRET =
+TWITTER_SECRET = 
+COOKIE_SECRET = 
 SESSION_SECRET =
 # mongo information
 MONGO_ADMIN = 
@@ -27,11 +27,15 @@ MONGO_CONTAINER_NAME = mongodb-blog
 NODE_LINK_MONGO_ALIAS = mongodb-blog
 NODE_IMAGE_NAME = node-env
 NODE_CONTAINER_NAME = node-blog
+NGINX_IMAGE_NAME = nginx-env
+NGINX_DEBUG_CONTAINER_NAME = nginx-blog-debug
+NGINX_CONTAINER_NAME = nginx-blog
+NGINX_LINK_NODE_ALIAS = node-blog-host
 # make test easy
 NODE_DEBUG_IMAGE_NAME = node-dev-env
 NODE_DEBUG_CONTAINER_NAME = node-blog-debug
-LOCAL_NODE_PORT = 9999
 LOCAL_NODE_DEBUG_PORT = 2333
+LOCAL_NGINX_PORT = 80
 
 # options
 REPORTER = list
@@ -51,9 +55,19 @@ define dockerClear
 endef
 
 # one click deploy all
-one-click-deploy: docker-deploy-mongodb docker-deploy-node
+one-click-deploy: docker-deploy-mongodb docker-deploy-node docker-deploy-nginx
 
-one-click-destroy: docker-destroy-node docker-destroy-mongodb
+one-click-destroy: docker-destroy-nginx docker-destroy-node docker-destroy-mongodb
+
+docker-deploy-nginx:
+	@echo ****************** Build image ***********************
+	docker build -t $(NGINX_IMAGE_NAME) \
+		--file docker/nginx/Dockerfile .
+	@echo ****************** Run container *********************
+	docker run --name $(NGINX_CONTAINER_NAME) \
+		-p $(LOCAL_NGINX_PORT):80 \
+		--link $(NODE_CONTAINER_NAME):$(NGINX_LINK_NODE_ALIAS) \
+		-d $(NGINX_IMAGE_NAME)
 
 docker-deploy-node:
 	@echo ****************** Build image ***********************
@@ -61,7 +75,6 @@ docker-deploy-node:
 		--file docker/node/Dockerfile .
 	@echo ****************** Run container *********************
 	docker run --name $(NODE_CONTAINER_NAME) \
-		-p $(LOCAL_NODE_PORT):3000 \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-d $(NODE_IMAGE_NAME)
 
@@ -72,6 +85,16 @@ docker-deploy-node-debug:
 		-v $(CUR_DIR):/usr/src/app \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-it $(NODE_DEBUG_IMAGE_NAME)
+
+docker-deploy-nginx-debug:
+	@echo ****************** Build image ***********************
+	docker build -t $(NGINX_IMAGE_NAME) \
+		--file docker/nginx/Dockerfile .
+	@echo ****************** Run container *********************
+	docker run --name $(NGINX_DEBUG_CONTAINER_NAME) \
+		-p $(LOCAL_NGINX_PORT):80 \
+		--link $(NODE_DEBUG_CONTAINER_NAME):$(NGINX_LINK_NODE_ALIAS) \
+		-it $(NGINX_IMAGE_NAME)
 
 docker-deploy-mongodb:
 	@echo ****************** Build image ***********************
@@ -114,6 +137,12 @@ docker-destroy-mongodb: docker-backup-db
 
 docker-destroy-node:
 	$(call dockerClear, $(NODE_IMAGE_NAME), $(NODE_CONTAINER_NAME))
+
+docker-destroy-nginx:
+	$(call dockerClear, $(NGINX_IMAGE_NAME), $(NGINX_CONTAINER_NAME))
+
+docker-destroy-nginx-debug:
+	$(call dockerClear, $(NGINX_IMAGE_NAME), $(NGINX_DEBUG_CONTAINER_NAME))
 
 docker-backup-db:
 	@echo ****************** backup blog data ****************
@@ -160,4 +189,4 @@ docker-access-blog-mongodb:
 		mongo -u ${MONGO_BLOG_USER} \
 		-p ${MONGO_BLOG_PWD} blog
 
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug
