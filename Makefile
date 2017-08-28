@@ -1,19 +1,5 @@
-# get value from json file
-# you need to make a new MakefileConfig.json file which contain variable.
-
-define GetValueFromJson
-$(shell node -p "require('./MakefileConfig.json').$(1)")
-endef
-
-TWITTER_KEY = $(call GetValueFromJson, twitterKey)
-TWITTER_SECRET = $(call GetValueFromJson, twitterSecret)
-COOKIE_SECRET = $(call GetValueFromJson, cookieSecret)
-SESSION_SECRET = $(call GetValueFromJson, sessionSecret)
-# mongo information
-MONGO_ADMIN = $(call GetValueFromJson, mongoAdmin)
-MONGO_ADMIN_PWD = $(call GetValueFromJson, mongoAdminPwd)
-MONGO_BLOG_USER = $(call GetValueFromJson, mongoBlogUser)
-MONGO_BLOG_PWD = $(call GetValueFromJson, mongoBlogPwd)
+# include variable file Makefile.config
+include Makefile.config
 
 # some variable
 CUR_DIR := $(PWD)

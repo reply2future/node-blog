@@ -1,5 +1,5 @@
 # Config file which contain private information
-MakefileConfig.json
+Makefile.config
 
 # Logs
 logs

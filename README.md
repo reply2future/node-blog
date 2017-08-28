@@ -23,19 +23,16 @@ Isolate each part.
 
 **IMPORT**
 
-you need create a new file named **MakefileConfig.json** in the project root directory.Such as mongodb password.for example:
+you need create a new file named **Makefile.config** in the project root directory.Such as mongodb password.for example:
 
 ```
-{
-	"twitterKey": "",
-	"twitterSecret" : "",
-	"cookieSecret" : "",
-	"sessionSecret" : "",
-	"mongoAdmin" : "",
-	"mongoAdminPwd" : "",
-	"mongoBlogUser" : "",
-	"mongoBlogPwd" : ""
-}
+TWITTER_KEY=""
+TWITTER_SECRET=""
+COOKIE_SECRET=""
+SESSION_SECRET=""
+MONGO_ADMIN=""
+MONGO_ADMIN_PWD=""
+MONGO_BLOG_USER=""
 ```
 
 All build step is in the **Makefile** file,you just need to run `make one-click-deploy` in the project root directory and wait a minutes.
