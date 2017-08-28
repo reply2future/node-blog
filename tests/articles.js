@@ -1,5 +1,5 @@
 
-const app = require('../bin/debug'),
+const app = require('../bin/www'),
 	  superagent = require('superagent'),
 	  expect = require('expect.js');
 

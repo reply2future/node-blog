@@ -31,7 +31,6 @@ app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'));
 
 var fileStoreOpt = {
 	path: '/tmp/blog-session/',
-	retries: 0
 };
 
 app.use(session({
