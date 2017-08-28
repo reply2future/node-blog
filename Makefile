@@ -1,17 +1,19 @@
-# *******************************************************
-# private information
-# you should fill the variable
-# *******************************************************
-TWITTER_KEY = 
-TWITTER_SECRET = 
-COOKIE_SECRET = 
-SESSION_SECRET =
+# get value from json file
+# you need to make a new MakefileConfig.json file which contain variable.
+
+define GetValueFromJson
+$(shell node -p "require('./MakefileConfig.json').$(1)")
+endef
+
+TWITTER_KEY = $(call GetValueFromJson, twitterKey)
+TWITTER_SECRET = $(call GetValueFromJson, twitterSecret)
+COOKIE_SECRET = $(call GetValueFromJson, cookieSecret)
+SESSION_SECRET = $(call GetValueFromJson, sessionSecret)
 # mongo information
-MONGO_ADMIN = 
-MONGO_ADMIN_PWD = 
-MONGO_BLOG_USER =
-MONGO_BLOG_PWD =
-# *******************************************************
+MONGO_ADMIN = $(call GetValueFromJson, mongoAdmin)
+MONGO_ADMIN_PWD = $(call GetValueFromJson, mongoAdminPwd)
+MONGO_BLOG_USER = $(call GetValueFromJson, mongoBlogUser)
+MONGO_BLOG_PWD = $(call GetValueFromJson, mongoBlogPwd)
 
 # some variable
 CUR_DIR := $(PWD)
@@ -164,9 +166,10 @@ docker-backup-db:
 insert-db:
 	@echo ****************** Seeding blog **********************
 	./db/seed.sh
-
 test:
-	$(PROCESS_ENV) ./node_modules/mocha/bin/mocha \
+	$(PROCESS_ENV) \
+		./node_modules/nyc/bin/nyc.js \
+		./node_modules/mocha/bin/mocha \
 		--reporter $(REPORTER) \
 		$(MOCHA_OPTS) \
 		tests/*.js
@@ -189,4 +192,11 @@ docker-access-blog-mongodb:
 		mongo -u ${MONGO_BLOG_USER} \
 		-p ${MONGO_BLOG_PWD} blog
 
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug
+docker-node-debug-test:
+	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
+		make test
+
+docker-node-debug-debug:
+	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
+		make debug
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug

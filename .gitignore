@@ -1,5 +1,5 @@
-# Makefile
-Makefile
+# Config file which contain private information
+MakefileConfig.json
 
 # Logs
 logs
