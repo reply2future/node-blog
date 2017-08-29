@@ -7,6 +7,7 @@ services:
 
 before_install:
     make one-click-deploy
+    mv Makefile.config.template Makefile.config
 
 script:
     make docker-node-production-test
