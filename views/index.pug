@@ -2,11 +2,14 @@ extends layout
 
 block page
 	- var menu = 'index'
+block append headers
+	.wide-header
+		.jumbotron
+			h1 -Now or Never-
+			p Welcome to my blog! BY&nbsp;
+				a(href="https://github.com/feimeizhan") @feimeizhan
+				|. Please enjoy.
 block content
-	h1.page-header -Now or never-
-	p.lead Welcome to my blog! BY&nbsp;
-		a(href="https://github.com/feimeizhan") @feimeizhan
-		|. Please enjoy.
 	if(articles.length === 0)
 		| There's no published content yet.
 		a(href="/users/login") Log in 
