@@ -1,0 +1,12 @@
+sudo: required
+
+language: node_js
+
+services:
+    docker
+
+before_install:
+    make one-click-deploy
+
+script:
+    make docker-node-production-test

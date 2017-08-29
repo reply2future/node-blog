@@ -184,8 +184,11 @@ docker-access-blog-mongodb:
 docker-node-debug-test:
 	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
 		make test
+docker-node-production-test:
+	docker exec -it $(NODE_CONTAINER_NAME) \
+		make test
 
 docker-node-debug-debug:
 	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
 		make debug
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug dev-start
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug dev-start docker-node-production-test
