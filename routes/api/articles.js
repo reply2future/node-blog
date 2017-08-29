@@ -44,7 +44,7 @@ exports.editArticleById = function(req, res, next){
 		if(error)
 			return next(error);
 		res.status(200).json({
-			message: result
+			message:result
 		});
 	});
 };

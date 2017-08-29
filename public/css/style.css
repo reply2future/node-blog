@@ -6,6 +6,7 @@
 }
 footer {
 	height: 60px;
+	margin:auto 110px;
 }
 html,
 body {
@@ -27,10 +28,10 @@ hr {
 	margin-right: 10px;
 }
 .content {
-	margin-top: 40px;
-	margin-bottom: 40px;
+	margin:40px 60px;	
 }
 #editor{
+	font-size: 18px;
 	height: auto;
 	min-height: 375px;
 	padding: 10px;

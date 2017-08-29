@@ -4,26 +4,29 @@ block append link
 block page
 	- var menu = 'post'
 block content
-	h2 Post an article
+	if(!title)
+		h2 Post an article
+	else
+		h2 Edit an article
 	#info-alert.alert(role="alert")
 	.col-md-8
-		form#article-form(role="form")
+		form#article-form(role="form", action=!title?"/articles":"/api/articles/" + _id, method=!title?"POST":"PUT")
 			.form-group
 				label(for="title") Title
-				input#title.form-control(name="title", type="text", placeholder="Javascript is good")
+				input#title.form-control(name="title", type="text", placeholder="Javascript is good", value=title)
 			.form-group
 				label(for="slug") Slug
-				input#slug.form-control(name="slug", type="text", placeholder="js-good")
+				input#slug.form-control(name="slug", type="text", placeholder="js-good", value=slug)
 				span.help-block This string will be used in the URL.
 			.form-group
 				label(for="tags") Tags
-				input#tags.form-control(name="tags", type="text", placeholder="js")
+				input#tags.form-control(name="tags", type="text", placeholder="js", value=tags?tags.join(','):"")
 				span.help-block This string will be used in the Category,and seperate with comma(,).
 			.form-group
 				label(for="text") Text
-				#editor
+				#editor(value=JSON.stringify(text))
 			p
-				button.btn.btn-primary(type="submit") Save
+				button.btn.btn-primary(type="submit") Save 
 
 block append script
 	script(src="/static/lib/quill/quill.js", type="text/javascript")

@@ -23,6 +23,9 @@ block content
 							td.action
 								button.btn.btn-default.btn-sm.publish(type="button")
 									span.glyphicon(class=(article.published)?"glyphicon-pause":"glyphicon-play", title=(article.published)?"Unpublish":"Publish")
+							td.action
+								button.btn.btn-default.btn-sm.edit(type="button")
+									span.glyphicon.glyphicon-edit
 							td= article.title
 block append script
 	script(type="text/javascript", src="/static/js/admin.js" async)

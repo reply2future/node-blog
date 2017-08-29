@@ -169,6 +169,9 @@ debug-test:
 debug:
 	$(PROCESS_ENV) node debug bin/www
 
+dev-start:
+	$(PROCESS_ENV) node ./bin/www
+
 # production environment
 start:
 	$(NODE_PRO_ENV) $(PROCESS_ENV) node ./bin/www
@@ -185,4 +188,4 @@ docker-node-debug-test:
 docker-node-debug-debug:
 	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
 		make debug
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug dev-start

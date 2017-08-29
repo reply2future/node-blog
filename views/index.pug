@@ -3,9 +3,13 @@ extends layout
 block page
 	- var menu = 'index'
 block content
+	h1.page-header -Now or never-
+	p.lead Welcome to my blog! BY&nbsp;
+		a(href="https://github.com/feimeizhan") @feimeizhan
+		|. Please enjoy.
 	if(articles.length === 0)
 		| There's no published content yet.
-		a(href="/users/login") Log in
+		a(href="/users/login") Log in 
 		| to post and publish.
 	else
 		each article, index in articles

@@ -5,11 +5,23 @@
  * {
  *   method: 'GET',
  *   url: '/articles'
+ *   option: 'id='
  * }
  */
 exports.getPostView = function(req, res, next){
-	if(!req.body.title)
+	if(!req.query.id){
 		res.render('post');
+	}else{
+		// fill view with article
+		req.collections.articles.findById(req.query.id, function(error, article){
+			if(error)
+				return next(error);
+
+			if(!article)
+				return res.sendStatus(404);
+			res.render('post', article);
+		});		
+	}
 };
 
 /*

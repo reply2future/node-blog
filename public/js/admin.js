@@ -50,8 +50,16 @@ var update = function(event){
 	});
 };
 
+var edit = function(event){
+	var $tr = findTr(event);
+	var id = $tr.attr('data-id');
+	location.href = '/articles?id=' + id;
+};
+
+
 $(document).ready(function(){
 	var $element = $('.admin tbody');
+	$element.on('click', 'button.edit', edit);
 	$element.on('click', 'button.remove', remove);
 	$element.on('click', 'button', update);
-})
+});

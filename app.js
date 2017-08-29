@@ -110,7 +110,7 @@ app.get('/articles/:slug', pages.articles.getArticleBySlug);
 
 
 // RESTful api
-app.put('/api/articles/:id', authorize, api.articles.editArticleById);
+app.put('/api/articles/:id', authorize, mergeArticleArgs, api.articles.editArticleById);
 app.delete('/api/articles/:id', authorize, api.articles.delArticleById);
 app.get('/api/articles', api.articles.getAllArticles);
 app.post('/api/articles', authorize, mergeArticleArgs, checkArticleArgs, api.articles.postArticle);
