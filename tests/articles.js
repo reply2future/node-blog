@@ -46,7 +46,7 @@ describe('server', function(){
 	describe('article module', function(){
 		it('should login successfully', function(done){
 			authorizedUser
-				.post('http://localhost:' + app.port + '/users/login')
+				.post('http://localhost' + '/users/login')
 				.send({ email: 'feimei.zhan@live.com', password: '123456'})
 				.end(function(err, res){
 					expect(res.status).to.equal(200);
@@ -57,7 +57,7 @@ describe('server', function(){
 
 		it('should post successfully', function(done){
 			authorizedUser
-				.post('http://localhost:' + app.port + '/api/articles')
+				.post('http://localhost' + '/api/articles')
 				.send(JSON.stringify(postData))
 				.set('Content-Type', 'application/json')
 				.end(function(err, res){
@@ -69,7 +69,7 @@ describe('server', function(){
 		it('should modify successfully', function(done){
 			postData.article.title = 'Modified',
 			authorizedUser
-				.put('http://localhost:' + app.port + '/api/articles/' + postData.article._id)
+				.put('http://localhost' + '/api/articles/' + postData.article._id)
 				.send(postData)
 				.end(function(err, res){
 					expect(res.status).to.equal(200);
@@ -80,7 +80,7 @@ describe('server', function(){
 
 		it('should delete successfully', function(done){
 			authorizedUser
-				.delete('http://localhost:' + app.port + '/api/articles/' + postData.article._id)
+				.delete('http://localhost' + '/api/articles/' + postData.article._id)
 				.end(function(err, res){
 					expect(res.status).to.equal(200);
 					expect(res.body.message).to.equal(1);

@@ -13,7 +13,7 @@ describe('server', function(){
 	describe('articles data fetch', function(){
 		it('should get all articles successfully', function(done){
 			superagent
-				.get('http://localhost:' + app.port + '/api/articles')
+				.get('http://localhost' + '/api/articles')
 				.end(function(err, res){
 					expect(res.status).to.equal(200);
 					articles = res.body.message;
@@ -25,7 +25,7 @@ describe('server', function(){
 	describe('homepage', function(){
 		it('should listen successfully', function(done){
 			superagent
-				.get('http://localhost:' + app.port)
+				.get('http://localhost')
 				.end(function(err, res){
 					expect(res.status).to.equal(200);
 					done();
@@ -34,7 +34,7 @@ describe('server', function(){
 
 		it('should contain posts', function(done){
 			superagent
-				.get('http://localhost:' + app.port)
+				.get('http://localhost')
 				.end(function(err, res){
 					articles.forEach(function(item, index, list){
 						if(item.published){
@@ -55,7 +55,7 @@ describe('server', function(){
 			let n = articles.length;
 			articles.forEach(function(item, index, list){
 				superagent
-					.get('http://localhost:' + app.port + '/articles/' + articles[index].slug)
+					.get('http://localhost' + '/articles/' + articles[index].slug)
 					.end(function(err, res){
 						if(item.published){
 							expect(res.text).to.contain(articles[index].title);

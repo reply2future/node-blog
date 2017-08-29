@@ -1,4 +1,7 @@
 # Node Blog
+
+[![Build Status](https://travis-ci.org/feimeizhan/node-blog.svg?branch=master)](https://travis-ci.org/feimeizhan/node-blog)
+
 A blog use Node.js,Mongodb,nginx and deployed with docker.
 
 # Feature note
