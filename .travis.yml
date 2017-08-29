@@ -3,11 +3,11 @@ sudo: required
 language: node_js
 
 services:
-    docker
+  - docker
 
 before_install:
-    mv Makefile.config.template Makefile.config
-    make one-click-deploy
+  - mv Makefile.config.template Makefile.config
+  - make one-click-deploy
 
 script:
-    make docker-node-production-test
+  - make docker-node-production-test
