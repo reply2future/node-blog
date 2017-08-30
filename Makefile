@@ -78,6 +78,8 @@ docker-deploy-node-debug:
 		-v $(CUR_DIR):/usr/src/app \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-d $(NODE_IMAGE_VERSION) /bin/bash -c "npm install; node docker/node/daemon.js"
+	#for npm install
+	@sleep 30
 
 docker-deploy-nginx-debug:
 	@echo ****************** Build image ***********************
