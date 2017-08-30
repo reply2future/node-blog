@@ -7,7 +7,7 @@ services:
 
 before_install:
   - mv Makefile.config.template Makefile.config
-  - make one-click-deploy
+  - make one-click-deploy-debug
 
 script:
-  - make docker-node-production-test
+  - make docker-node-debug-test
