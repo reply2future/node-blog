@@ -20,6 +20,7 @@ NGINX_DEBUG_CONTAINER_NAME = nginx-blog-debug
 NGINX_CONTAINER_NAME = nginx-blog
 NGINX_LINK_NODE_ALIAS = node-blog-host
 # make test easy
+NODE_IMAGE_VERSION = node:boron
 NODE_DEBUG_IMAGE_NAME = node-dev-env
 NODE_DEBUG_CONTAINER_NAME = node-blog-debug
 LOCAL_NODE_DEBUG_PORT = 2333
@@ -47,6 +48,9 @@ one-click-deploy: docker-deploy-mongodb docker-deploy-node docker-deploy-nginx
 
 one-click-destroy: docker-destroy-nginx docker-destroy-node docker-destroy-mongodb
 
+# one click deploy for debug and test
+one-click-deploy-debug: docker-deploy-mongodb docker-deploy-node-debug docker-deploy-nginx-debug
+
 docker-deploy-nginx:
 	@echo ****************** Build image ***********************
 	docker build -t $(NGINX_IMAGE_NAME) \
@@ -70,9 +74,10 @@ docker-deploy-node-debug:
 	@echo ****************** Run container *********************
 	docker run --name $(NODE_DEBUG_CONTAINER_NAME) \
 		-p $(LOCAL_NODE_DEBUG_PORT):3000 \
+		-w="/usr/src/app" \
 		-v $(CUR_DIR):/usr/src/app \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
-		-it $(NODE_DEBUG_IMAGE_NAME)
+		-d $(NODE_IMAGE_VERSION) /bin/bash -c "npm install; node docker/node/daemon.js"
 
 docker-deploy-nginx-debug:
 	@echo ****************** Build image ***********************
@@ -81,8 +86,9 @@ docker-deploy-nginx-debug:
 	@echo ****************** Run container *********************
 	docker run --name $(NGINX_DEBUG_CONTAINER_NAME) \
 		-p $(LOCAL_NGINX_PORT):80 \
+		-v $(CUR_DIR)/public:/usr/src/app/static \
 		--link $(NODE_DEBUG_CONTAINER_NAME):$(NGINX_LINK_NODE_ALIAS) \
-		-it $(NGINX_IMAGE_NAME)
+		-d $(NGINX_IMAGE_NAME)
 
 docker-deploy-mongodb:
 	@echo ****************** Build image ***********************
@@ -152,6 +158,7 @@ docker-backup-db:
 insert-db:
 	@echo ****************** Seeding blog **********************
 	./db/seed.sh
+
 test:
 	$(PROCESS_ENV) \
 		./node_modules/nyc/bin/nyc.js \
@@ -184,11 +191,8 @@ docker-access-blog-mongodb:
 docker-node-debug-test:
 	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
 		make test
-docker-node-production-test:
-	docker exec -it $(NODE_CONTAINER_NAME) \
-		make test
 
 docker-node-debug-debug:
 	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) \
 		make debug
-.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug dev-start docker-node-production-test
+.PHONY: test insert-db debug inspect start debug-test docker-deploy-mongodb docker-destroy-mongodb docker-destroy-node docker-deploy-node one-click-deploy docker-backup-db docker-deploy-node-debug docker-access-blog-mongodb docker-deploy-nginx docker-destroy-nginx docker-deploy-nginx-debug docker-destroy-nginx-debug docker-node-debug-test docker-node-debug-debug dev-start one-click-deploy-debug
