@@ -78,6 +78,8 @@ docker-deploy-node-debug:
 		-v $(CUR_DIR):/usr/src/app \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
 		-d $(NODE_IMAGE_VERSION) /bin/sh -c "node docker/node/daemon.js"
+	@echo ***************** Install make ***********************
+	docker exec -it $(NODE_DEBUG_CONTAINER_NAME) sh -c "apk add --no-cache make"
 
 docker-deploy-nginx-debug:
 	@echo ****************** Build image ***********************
@@ -89,7 +91,7 @@ docker-deploy-nginx-debug:
 		-v $(CUR_DIR)/public:/usr/src/app/static \
 		--link $(NODE_DEBUG_CONTAINER_NAME):$(NGINX_LINK_NODE_ALIAS) \
 		-d $(NGINX_IMAGE_NAME)
-
+	
 docker-deploy-mongodb:
 	@echo ****************** Build image ***********************
 	docker build -t $(MONGO_IMAGE_NAME) \
