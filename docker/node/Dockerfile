@@ -1,7 +1,10 @@
-FROM node:boron
+FROM node:8-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
+
+# Install make
+RUN apk add --no-cache make
 
 # Install app dependencies
 COPY package.json .

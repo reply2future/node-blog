@@ -1,5 +1,6 @@
-var app = require('../app');
-var http = require('http');
+const app = require('../app');
+const http = require('http');
+const nodemailer = require('nodemailer');
 
 const port = process.env.PORT || 3000;
 
@@ -15,7 +16,7 @@ var boot = function(){
 
 var shutdown = function(){
 	server.close();
-}
+};
 
 if(require.main === module){
 	boot();
@@ -23,4 +24,34 @@ if(require.main === module){
 	exports.boot = boot;
 	exports.shutdown = shutdown;
 	exports.port = port;
+}
+
+if (process.env.NODE_ENV === 'production') {
+	process.on('uncaughtException', (err) => {
+		// send email to admin
+		let transporter = nodemailer.createTransport({
+			host: process.env.MAIL_HOST,
+			port: 587,
+			secure: false,  // true for 456, false for other ports
+			auth: {
+				user: process.env.MAIL_USER,
+				pass: process.env.MAIL_PASS 
+			}
+		});
+
+		let mailOptions = {
+			from: process.env.EMAIL_FROM,
+			to: process.env.EMAIL_TO,
+			subject: 'uncaughtException',
+			text: `There is an uncaughtException in the node-blog${err}`
+		}; 
+
+		transporter.sendMail(mailOptions, (sErr, info) => {
+			if (sErr) {
+				console.error(sErr);
+			} else {
+				console.log(`Send mail successfully.${info}`);
+			}
+		});
+	});
 }

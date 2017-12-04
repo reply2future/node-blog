@@ -20,10 +20,10 @@ NGINX_DEBUG_CONTAINER_NAME = nginx-blog-debug
 NGINX_CONTAINER_NAME = nginx-blog
 NGINX_LINK_NODE_ALIAS = node-blog-host
 # make test easy
-NODE_IMAGE_VERSION = node:boron
+NODE_IMAGE_VERSION = node:8-alpine
 NODE_DEBUG_IMAGE_NAME = node-dev-env
 NODE_DEBUG_CONTAINER_NAME = node-blog-debug
-LOCAL_NODE_DEBUG_PORT = 2333
+LOCAL_NODE_DEBUG_PORT = 3000 
 LOCAL_NGINX_PORT = 80
 
 # options
@@ -77,7 +77,7 @@ docker-deploy-node-debug:
 		-w="/usr/src/app" \
 		-v $(CUR_DIR):/usr/src/app \
 		--link $(MONGO_CONTAINER_NAME):$(NODE_LINK_MONGO_ALIAS) \
-		-d $(NODE_IMAGE_VERSION) /bin/bash -c "node docker/node/daemon.js"
+		-d $(NODE_IMAGE_VERSION) /bin/sh -c "node docker/node/daemon.js"
 
 docker-deploy-nginx-debug:
 	@echo ****************** Build image ***********************
