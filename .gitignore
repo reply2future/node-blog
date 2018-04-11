@@ -1,5 +1,5 @@
 # Config file which contain private information
-Makefile.config
+docker-compose.env
 
 # Logs
 logs
@@ -60,3 +60,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# data
+db

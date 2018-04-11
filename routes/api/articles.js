@@ -1,17 +1,29 @@
-const mongo = require('mongoskin');
 /*
  * get all articles
  * {
  *   method: 'GET',
- *   url: '/api/articles'
+ *   url: '/api/articles',
+ *   querystring: {
+ *		offset:number,
+ *		limit: number,
+ *		order: 'desc'|'asc', // default order by time
+ *	}
  * }
  */
 exports.getAllArticles = function(req, res, next){
-	req.collections.articles.find({}).toArray(function(error, articles){
-		if(error)
-			return next(error);
-		res.status(200).json({message:articles});
-	});
+	let _offset = req.query.offset || 0;
+	let _limit = req.query.limit || 10;
+	let _order = req.query.order || 'desc';
+
+	try {
+		let _articles = req.db.get('articles')
+			.filter({published: true})
+			.orderBy(['lastModified'], [_order]).slice(_offset, _limit)
+			.value();
+		res.status(200).json({message:_articles});
+	} catch (error) {
+		next(error);
+	}
 };
 /*
  * post article
@@ -22,11 +34,12 @@ exports.getAllArticles = function(req, res, next){
  */
 exports.postArticle = function(req, res, next){
 	req.body.article.published = false;
-	req.collections.articles.insert(req.body.article, function(error, articleResponse){
-		if(error)
-			return next(error);
+	try {
+		req.db.get('articles').push(req.body.article).write();
 		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
-	});
+	} catch (error) {
+		next(error);
+	}
 };
 
 /*
@@ -40,14 +53,13 @@ exports.editArticleById = function(req, res, next){
 	if(!req.params.id)
 		return res.status(400).json({message:'No article ID.'});
 
-	req.collections.articles.updateById(req.params.id, {$set: req.body.article}, function(error, result){
-		if(error)
-			return next(error);
-		res.status(200).json({
-			message:result
-		});
-	});
-};
+	try {
+		req.db.get('articles').updateById(req.params.id, req.body.article).write();
+		res.status(200).json({message: 'Article was edited.'});
+	} catch(error) {
+		next(error);
+	}
+}
 
 /*
  * delete article by id
@@ -60,11 +72,10 @@ exports.delArticleById = function(req, res, next){
 	if(!req.params.id)
 		return res.status(400).json({message:'No article ID.'});
 
-	req.collections.articles.removeById(req.params.id, function(error, count){
-		if(error)
-			return next(error);
-		res.status(200).json({
-			message: count
-		});
-	});
-};
+	try {
+		req.db.get('articles').removeById(req.params.id).write();
+		res.status(200).json({message: 'Article was deleted'});
+	} catch(error) {
+		next(error);
+	}
+}

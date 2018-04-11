@@ -1,13 +1,14 @@
 const express = require('express'),
-	  mongoskin = require('mongoskin'),
 	  http = require('http'),
 	  path = require('path'),
 	  logger = require('morgan'),
 	  cookieParser = require('cookie-parser'),
 	  session = require('express-session'),
 	  FileStore = require('session-file-store')(session),
-//	  compression = require('compression'),
-	  bodyParser = require('body-parser');
+	  bodyParser = require('body-parser'),
+	  lowdb = require('lowdb'),
+	  FileSync = require('lowdb/adapters/FileSync');
+	  lodashId = require('lodash-id');
 
 const routes = require('./routes/exports'),
 	  pages = routes.pages,
@@ -21,16 +22,18 @@ app.set('trust proxy', true);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// app.use(compression());
-// app.use(express.static(path.join(__dirname, 'public')));
+if (process.env.NODE_ENV === 'development') {
+	app.use(logger('dev'));
+} else {
+	app.use(logger('combined'));
+}
 
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'));
 
-var fileStoreOpt = {
-	path: '/tmp/blog-session/',
+let fileStoreOpt = {
+	path: path.resolve('/tmp/blog-session')
 };
 
 app.use(session({
@@ -39,33 +42,35 @@ app.use(session({
 	saveUninitialized: false,
 	store: new FileStore(fileStoreOpt)
 }));
-// through docker --link the mongodb container
-// access mongodb using docker container alias
-const dbUrl = process.env.MONGOHQ_URL || 'mongodb://mongodb:27017/blog',
-	  db = mongoskin.db(dbUrl),
-	  collections = {
-		  articles: db.collection('articles'),
-		  users: db.collection('users')
-	  };
+
+// data init
+const dataAdapter = new FileSync('./db/data.json'),
+	  db = lowdb(dataAdapter);
+db._.mixin(lodashId);
+db.defaults({ 
+	articles:[], 
+	users:[{
+		email:process.env.ADMIN_USER || 'test',
+		password: process.env.ADMIN_PWD || 'e10adc3949ba59abbe56e057f20f883e',
+		isAdmin: true
+	}] 
+}).write();
 
 // load data
 app.use(function(req, res, next){
-	if(!collections.articles || !collections.users)
-		return next(new Error('No collections.'));
-
-	req.collections = collections;
+	req.db = db;
 	return next();
 });
 
-// Authentication
+// authentication
 app.use(function(req, res, next){
-	if(req.session && req.session.admin)
-		res.locals.admin = true;
+	if(req.session && req.session.isAdmin)
+		res.locals.isAdmin = true;
 	next();
 });
 
 const authorize = function(req, res, next){
-	if(req.session && req.session.admin)
+	if(req.session && req.session.isAdmin)
 		return next();
 	else
 		return res.sendStatus(401);
@@ -97,6 +102,14 @@ const mergeArticleArgs = function(req, res, next){
 	req.body.article.lastModified = new Date();
 	return next();
 };
+
+if (process.env.NODE_ENV === 'development') {
+	// update db to test
+	app.use(function(req, res, next){
+		req.db.read();
+		return next();
+	});
+}
 
 // page routes
 app.get(['/', '/index'], pages.index.getIndexView);

@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 /*
  * get login view 
  * {
@@ -11,6 +13,8 @@ exports.getLoginView = function(req, res, next){
 
 /*
  * post login
+ *
+ * password add salt.
  * 
  * {
  *   method: 'POST',
@@ -22,18 +26,19 @@ exports.postLogin = function(req, res, next){
 		return res.render('login', { error: 'Email or Password is empty'});
 	}
 
-	req.collections.users.findOne({
-		email: req.body.email,
-		password: req.body.password
-	}, function(error, user){
-		if(error)
-			return next(error);
-		if(!user)
+	try {
+		let _user = req.db.get('users').find({
+			email: req.body.email,
+			password: crypto.createHash('md5').update(req.body.password).digest('hex')
+		}).value();
+		if(!_user)
 			return res.render('login', {error: 'Incorrect email and password combination.'});
-		req.session.user = user;
-		req.session.admin = user.admin;
+		req.session.user = _user;
+		req.session.isAdmin = _user.isAdmin;
 		res.redirect('/users/admin');
-	});
+	} catch(error) {
+		next(error);
+	}
 };
 
 /*
@@ -57,10 +62,10 @@ exports.logout = function(req, res, next){
  * }
  */
 exports.getAdminView = function(req, res, next){
-	req.collections.articles.find({}, {sort:{_id: -1}}).toArray(function(error, articles){
-		if(error)
-			return next(error);
-
-		res.render('admin', { articles: articles });
-	});
+	try {
+		let _articles = req.db.get('articles').value();
+		res.render('admin', { articles: _articles });
+	} catch(error) {
+		next(error);
+	}
 };

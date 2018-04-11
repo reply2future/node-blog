@@ -6,10 +6,17 @@
  * }
  */
 exports.getIndexView = function(req, res, next){
-	req.collections.articles.find({published: true}, {sort:{_id:-1}}).toArray(function(error, articles){
-		if(error)
-			return next(error);
+	let _offset = req.query.offset || 0;
+	let _limit = req.query.limit || 10;
+	let _order = req.query.order || 'desc';
 
-		res.render('index', {articles: articles});
-	});
+	try {
+		let _articles = req.db.get('articles')
+			.filter({published: true})
+			.orderBy(['lastModified'], [_order]).slice(_offset, _limit)
+			.value();
+		res.render('index', {articles: _articles});
+	} catch (error) {
+		next(error);
+	}
 };
