@@ -10,5 +10,7 @@ RUN npm install --only=production
 # Bundle app source
 COPY . .
 
+VOLUME ["/db"]
+
 # Should create Makefile in the root directory
 CMD [ "npm", "start" ]

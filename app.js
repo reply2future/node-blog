@@ -1,4 +1,5 @@
 const express = require('express'),
+	  fs = require('fs'),
 	  http = require('http'),
 	  path = require('path'),
 	  logger = require('morgan'),
@@ -44,7 +45,13 @@ app.use(session({
 }));
 
 // data init
-const dataAdapter = new FileSync('./db/data.json'),
+const dbDir = (process.env.NODE_ENV === 'development' ? './db' : '/db');
+
+if (!fs.existsSync(dbDir)) {
+	fs.mkdirSync(dbDir);
+}
+
+const dataAdapter = new FileSync(path.join(dbDir, 'data.json')),
 	  db = lowdb(dataAdapter);
 db._.mixin(lodashId);
 db.defaults({ 

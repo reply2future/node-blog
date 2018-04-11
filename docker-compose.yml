@@ -8,6 +8,8 @@ services:
     image: nb-service:reply2future
     env_file:
       - ./docker-compose.env
+    volumes:
+      - /blog-data:/db
     ports:
       - 3000:3000
 
