@@ -47,7 +47,8 @@ $('#article-form').submit(function(event){
 		title: titleValue,
 		slug: slugValue,
 		tags: tagsValue,
-		text: quill.getContents()
+		text: quill.getContents(),
+		lastModified: Date.now()
 	};
 
 	let alert = $('#info-alert');

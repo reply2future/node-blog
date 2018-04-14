@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(logger('combined'));
 }
 
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'));

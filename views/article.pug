@@ -10,7 +10,7 @@ block content
 				each value, index in tags
 					span.mx-1.label.label-default= value
 			span.text-muted create time: 
-			span.text-muted= lastModified.toDateString()
+			span.text-muted= new Date(lastModified)
 		hr
 		#editor
 	#disqus_thread

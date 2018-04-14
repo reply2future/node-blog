@@ -19,7 +19,7 @@ block content
 			.list-group
 				a.list-group-item(href="/articles/" + article.slug)
 					h4.list-group-item-heading= article.title
-					small.pull-right.text-muted= article.lastModified.toDateString()
+					small.pull-right.text-muted= new Date(article.lastModified)
 					p.text-muted tags: 
 						each value, index in article.tags
 							span.mx-1.label.label-default= value
