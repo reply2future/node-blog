@@ -40,7 +40,7 @@ docker-compose up -d
 ```
 All done!Check http://localhost:3000
 # Demo
-[My Blog](http://reply2future.pw)
+[My Blog](http://reply2future.pw:3000)
 
 ## Reference
 1.[Dockerizing a Node.js web app](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
