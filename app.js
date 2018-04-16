@@ -1,19 +1,18 @@
 const express = require('express'),
-	  fs = require('fs'),
-	  http = require('http'),
-	  path = require('path'),
-	  logger = require('morgan'),
-	  cookieParser = require('cookie-parser'),
-	  session = require('express-session'),
-	  FileStore = require('session-file-store')(session),
-	  bodyParser = require('body-parser'),
-	  lowdb = require('lowdb'),
-	  FileSync = require('lowdb/adapters/FileSync');
-	  lodashId = require('lodash-id');
+	fs = require('fs'),
+	path = require('path'),
+	logger = require('morgan'),
+	cookieParser = require('cookie-parser'),
+	session = require('express-session'),
+	FileStore = require('session-file-store')(session),
+	bodyParser = require('body-parser'),
+	lowdb = require('lowdb'),
+	FileSync = require('lowdb/adapters/FileSync'),
+	lodashId = require('lodash-id');
 
 const routes = require('./routes/exports'),
-	  pages = routes.pages,
-	  api = routes.api;
+	pages = routes.pages,
+	api = routes.api;
 
 const app = express();
 app.locals.appTitle = 'node-blog';
@@ -53,7 +52,7 @@ if (!fs.existsSync(dbDir)) {
 }
 
 const dataAdapter = new FileSync(path.join(dbDir, 'data.json')),
-	  db = lowdb(dataAdapter);
+	db = lowdb(dataAdapter);
 db._.mixin(lodashId);
 db.defaults({ 
 	articles:[], 

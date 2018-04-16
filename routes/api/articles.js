@@ -59,7 +59,7 @@ exports.editArticleById = function(req, res, next){
 	} catch(error) {
 		next(error);
 	}
-}
+};
 
 /*
  * delete article by id
@@ -78,4 +78,4 @@ exports.delArticleById = function(req, res, next){
 	} catch(error) {
 		next(error);
 	}
-}
+};

@@ -7,7 +7,7 @@ const crypto = require('crypto');
  *   url: '/users/login'
  * }
  */
-exports.getLoginView = function(req, res, next){
+exports.getLoginView = function(req, res){
 	res.render('login');
 };
 
@@ -48,7 +48,7 @@ exports.postLogin = function(req, res, next){
  *   url: '/users/logout'
  * }
  */
-exports.logout = function(req, res, next){
+exports.logout = function(req, res){
 	req.session.destroy();
 	res.redirect('/');
 };
