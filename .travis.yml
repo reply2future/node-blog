@@ -7,7 +7,7 @@ services:
   - docker
 
 before_install:
-  - make docker-node-debug-deploy 
+  - make docker-deploy 
 
 script:
-  - make docker-node-debug-test
+  - make docker-test

@@ -7,7 +7,7 @@ const crypto = require('crypto');
  *   url: '/users/login'
  * }
  */
-exports.getLoginView = function(req, res){
+exports.getLoginView = (req, res) => {
 	res.render('login');
 };
 
@@ -21,18 +21,24 @@ exports.getLoginView = function(req, res){
  *   url: '/users/login'
  * }
  */
-exports.postLogin = function(req, res, next){
-	if(!req.body.email || !req.body.password){
-		return res.render('login', { error: 'Email or Password is empty'});
-	}
+exports.postLogin = (req, res, next) => {
 
 	try {
-		let _user = req.db.get('users').find({
+		if(!req.body.email || !req.body.password){
+			return res.render('login', { error: 'Email or Password is empty'});
+		}
+
+		if (req.body.password.length !== 32) {
+			req.body.password = crypto.createHash('md5').update(req.body.password).digest('hex');
+		}
+
+		const _user = req.db.get('users').find({
 			email: req.body.email,
-			password: crypto.createHash('md5').update(req.body.password).digest('hex')
+			password: req.body.password
 		}).value();
-		if(!_user)
+		if(!_user) {
 			return res.render('login', {error: 'Incorrect email and password combination.'});
+		}
 		req.session.user = _user;
 		req.session.isAdmin = _user.isAdmin;
 		res.redirect('/users/admin');
@@ -48,7 +54,7 @@ exports.postLogin = function(req, res, next){
  *   url: '/users/logout'
  * }
  */
-exports.logout = function(req, res){
+exports.logout = (req, res) => {
 	req.session.destroy();
 	res.redirect('/');
 };
@@ -61,9 +67,9 @@ exports.logout = function(req, res){
  *   url: '/users/admin'
  * }
  */
-exports.getAdminView = function(req, res, next){
+exports.getAdminView = (req, res, next) => {
 	try {
-		let _articles = req.db.get('articles').value();
+		const _articles = req.db.get('articles').value();
 		res.render('admin', { articles: _articles });
 	} catch(error) {
 		next(error);

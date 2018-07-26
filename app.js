@@ -1,21 +1,17 @@
 const express = require('express'),
-	fs = require('fs'),
-	path = require('path'),
-	logger = require('morgan'),
-	cookieParser = require('cookie-parser'),
-	session = require('express-session'),
-	FileStore = require('session-file-store')(session),
-	bodyParser = require('body-parser'),
-	lowdb = require('lowdb'),
-	FileSync = require('lowdb/adapters/FileSync'),
-	lodashId = require('lodash-id');
+	  path = require('path'),
+	  logger = require('morgan'),
+	  cookieParser = require('cookie-parser'),
+	  session = require('express-session'),
+	  FileStore = require('session-file-store')(session),
+	  bodyParser = require('body-parser');
 
 const routes = require('./routes/exports'),
-	pages = routes.pages,
-	api = routes.api;
+	  pages = routes.pages,
+	  api = routes.api;
 
 const app = express();
-app.locals.appTitle = 'node-blog';
+app.locals.title = 'My Blog';
 
 app.set('trust proxy', true);
 
@@ -33,7 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'));
 
-let fileStoreOpt = {
+const fileStoreOpt = {
 	path: path.resolve('/tmp/blog-session')
 };
 
@@ -44,28 +40,10 @@ app.use(session({
 	store: new FileStore(fileStoreOpt)
 }));
 
-// data init
-const dbDir = (process.env.NODE_ENV === 'development' ? './db' : '/db');
-
-if (!fs.existsSync(dbDir)) {
-	fs.mkdirSync(dbDir);
-}
-
-const dataAdapter = new FileSync(path.join(dbDir, 'data.json')),
-	db = lowdb(dataAdapter);
-db._.mixin(lodashId);
-db.defaults({ 
-	articles:[], 
-	users:[{
-		email:process.env.ADMIN_USER || 'test',
-		password: process.env.ADMIN_PWD || 'e10adc3949ba59abbe56e057f20f883e',
-		isAdmin: true
-	}] 
-}).write();
 
 // load data
 app.use(function(req, res, next){
-	req.db = db;
+	req.db = app.get('db');
 	return next();
 });
 
@@ -110,14 +88,6 @@ const mergeArticleArgs = function(req, res, next){
 	return next();
 };
 
-if (process.env.NODE_ENV === 'development') {
-	// update db to test
-	app.use(function(req, res, next){
-		req.db.read();
-		return next();
-	});
-}
-
 // page routes
 app.get(['/', '/index'], pages.index.getIndexView);
 app.get('/users/login', pages.users.getLoginView);
@@ -134,6 +104,16 @@ app.put('/api/articles/:id', authorize, mergeArticleArgs, api.articles.editArtic
 app.delete('/api/articles/:id', authorize, api.articles.delArticleById);
 app.get('/api/articles', api.articles.getAllArticles);
 app.post('/api/articles', authorize, mergeArticleArgs, checkArticleArgs, api.articles.postArticle);
+
+// error handler
+app.use((err, req, res, next) => {
+	if (err) {
+		res.status(500).send({ message: err.message });
+		return;
+	}
+
+	next();
+});
 
 app.use(function(req, res){
 	res.sendStatus(404);

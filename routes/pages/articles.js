@@ -8,14 +8,14 @@
  *   option: 'id='
  * }
  */
-exports.getPostView = function(req, res, next){
+exports.getPostView = (req, res, next) => {
 
 	try {
 		if(!req.query.id){
 			res.render('post');
 		}else{
 			// fill view with article
-			let article = req.db.get('articles').getById(req.query.id).value();
+			const article = req.db.get('articles').getById(req.query.id).value();
 
 			if(!article)
 				return res.sendStatus(404);
@@ -37,15 +37,13 @@ exports.getPostView = function(req, res, next){
  * }
  */
 
-exports.postArticle = function(req, res, next){
-	// return res.status(403).json({ message: ' Deprecated: Please use /api/articles instead.'});
-
-	if(!req.body.title || !req.body.slug || !req.body.text){
-		return res.status(400).json({ message: 'Please fill title, slug and text.'});
-	}
+exports.postArticle = async (req, res, next) => {
 
 	try {
-		req.db.get('articles').insert({
+		if(!req.body.title || !req.body.slug || !req.body.text){
+			return res.status(400).json({ message: 'Please fill title, slug and text.'});
+		}
+		await req.db.get('articles').insert({
 			title: req.body.title,
 			slug: req.body.slug,
 			tags: req.body.tags,
@@ -67,12 +65,12 @@ exports.postArticle = function(req, res, next){
  *   url: '/articles/:slug'
  * }
  */
-exports.getArticleBySlug = function(req, res, next){
-	if(!req.params.slug)
-		return res.status(400).json({message: 'No article slug.'});
-
+exports.getArticleBySlug = (req, res, next) => {
 	try {
-		let article = req.db.get('articles').find({slug: req.params.slug}).value();
+		if(!req.params.slug) {
+			return res.status(400).json({message: 'No article slug.'});
+		}
+		const article = req.db.get('articles').find({slug: req.params.slug}).value();
 		if(!article || !article.published)
 			return res.sendStatus(404);
 		res.render('article', article);

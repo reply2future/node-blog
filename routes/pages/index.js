@@ -5,13 +5,13 @@
  *   url: ['/', '/index']
  * }
  */
-exports.getIndexView = function(req, res, next){
-	let _offset = req.query.offset || 0;
-	let _limit = req.query.limit || 10;
-	let _order = req.query.order || 'desc';
+exports.getIndexView = (req, res, next) => {
+	const _offset = req.query.offset || 0;
+	const _limit = req.query.limit || 10;
+	const _order = req.query.order || 'desc';
 
 	try {
-		let _articles = req.db.get('articles')
+		const _articles = req.db.get('articles')
 			.filter({published: true})
 			.orderBy(['lastModified'], [_order]).slice(_offset, _limit)
 			.value();

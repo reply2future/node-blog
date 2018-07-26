@@ -17,14 +17,7 @@ A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with 
 ## Usage
 
 ### Configuration
-- You need create a new file named **docker-compose.env** in the project root directory.Such as node expose port.for example:
-```bash
-TWITTER_KEY=xxxxx
-TWITTER_SECRET=xxxx
-COOKIE_SECRET=xxxxx
-SESSION_SECRET=xxxxx
-...
-```
+- You need create a new file named **ecosystem.config.js** in the project root directory.Such as template.
 - Use your Disqus comment plugin
 **IMPORTANT:** use your own **embed.js** url to replace mine in the *views/article.pug*
 ```javascript
@@ -40,7 +33,7 @@ docker-compose up -d
 ```
 All done!Check http://localhost:3000
 # Demo
-[My Blog](http://reply2future.pw:3000)
+[My Blog](http://blog.reply2future.pw)
 
 ## Reference
 1.[Dockerizing a Node.js web app](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)

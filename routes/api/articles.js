@@ -10,13 +10,13 @@
  *	}
  * }
  */
-exports.getAllArticles = function(req, res, next){
-	let _offset = req.query.offset || 0;
-	let _limit = req.query.limit || 10;
-	let _order = req.query.order || 'desc';
+exports.getAllArticles = (req, res, next) => {
+	const _offset = req.query.offset || 0;
+	const _limit = req.query.limit || 10;
+	const _order = req.query.order || 'desc';
 
 	try {
-		let _articles = req.db.get('articles')
+		const _articles = req.db.get('articles')
 			.filter({published: true})
 			.orderBy(['lastModified'], [_order]).slice(_offset, _limit)
 			.value();
@@ -32,10 +32,10 @@ exports.getAllArticles = function(req, res, next){
  *   url: '/api/articles'
  * }
  */
-exports.postArticle = function(req, res, next){
-	req.body.article.published = false;
+exports.postArticle = async (req, res, next) => {
 	try {
-		req.db.get('articles').push(req.body.article).write();
+		req.body.article.published = false;
+		await req.db.get('articles').push(req.body.article).write();
 		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
 	} catch (error) {
 		next(error);
@@ -49,12 +49,12 @@ exports.postArticle = function(req, res, next){
  *   url: '/api/articles/:id'
  * }
  */
-exports.editArticleById = function(req, res, next){
-	if(!req.params.id)
-		return res.status(400).json({message:'No article ID.'});
-
+exports.editArticleById = async (req, res, next) => {
 	try {
-		req.db.get('articles').updateById(req.params.id, req.body.article).write();
+		if(!req.params.id) {
+			return res.status(400).json({message:'No article ID.'});
+		}
+		await req.db.get('articles').updateById(req.params.id, req.body.article).write();
 		res.status(200).json({message: 'Article was edited.'});
 	} catch(error) {
 		next(error);
@@ -68,12 +68,12 @@ exports.editArticleById = function(req, res, next){
  *   url: '/api/articles/:id'
  * }
  */
-exports.delArticleById = function(req, res, next){
-	if(!req.params.id)
-		return res.status(400).json({message:'No article ID.'});
-
+exports.delArticleById = async (req, res, next) => {
 	try {
-		req.db.get('articles').removeById(req.params.id).write();
+		if(!req.params.id) {
+			return res.status(400).json({message:'No article ID.'});
+		}
+		await req.db.get('articles').removeById(req.params.id).write();
 		res.status(200).json({message: 'Article was deleted'});
 	} catch(error) {
 		next(error);

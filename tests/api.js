@@ -1,20 +1,16 @@
 const app = require('../bin/www'),
+	  path = require('path'),
 	  superagent = require('superagent'),
 	  expect = require('expect.js');
-	  lowdb = require('lowdb'),
-	  FileSync = require('lowdb/adapters/FileSync'),
-	  dataAdapter = new FileSync('./db/data.json'),
-	  db = lowdb(dataAdapter),
-	  lodashId = require('lodash-id'),
 	  crypto = require('crypto');
 
-describe('api module', function(){
-	let testUser = {
+describe('api module', () => {
+	const testUser = {
 		email: 'test@gmail.com',
 		password: '123456',
 		isAdmin: true
 	};
-	let postData = {
+	const postData = {
 		article: {
 			id: "18b28be4f366d000689806a",
 			title: "test-article-title",
@@ -44,18 +40,10 @@ describe('api module', function(){
 			},
 		}
 	}
-	let authorizedUser = superagent.agent();
+	const authorizedUser = superagent.agent();
 
-	before(function(){
-		db._.mixin(lodashId);
-		db.defaults({ articles:[], users:[] }).write();
-		// add test user
-		db.get('users').insert({
-			email: testUser.email, 
-			password: crypto.createHash('md5').update(testUser.password).digest('hex'),
-			isAdmin: testUser.isAdmin
-		}).write();
-		app.boot();
+	before((done) => {
+		app.boot(done);
 	})
 
 	describe('authorize and authenticate', function(){
@@ -162,7 +150,6 @@ describe('api module', function(){
 
 
 	after(function(){
-		db.get('users').removeWhere({email: testUser.email}).write();
 		app.shutdown();
 	})
 })
