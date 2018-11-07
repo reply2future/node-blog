@@ -11,7 +11,7 @@ const routes = require('./routes/exports'),
 	  api = routes.api;
 
 const app = express();
-app.locals.title = 'My Blog';
+app.locals.appTitle = 'My Blog';
 
 app.set('trust proxy', true);
 

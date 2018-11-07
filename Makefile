@@ -62,6 +62,12 @@ reload_serv:
 list_serv:
 	docker-compose exec server pm2 list
 
+log_serv:
+	docker-compose exec server pm2 logs --lines 200 -f
+
+access_serv:
+	docker-compose exec server sh
+
 npm_i:
 	docker-compose exec server npm i --only=production
 
