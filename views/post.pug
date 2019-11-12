@@ -10,7 +10,7 @@ block content
 		h2 Edit an article
 	#info-alert.alert(role="alert")
 	.col-md-8
-		form#article-form(role="form", action=!title?"/articles":"/api/articles/" + _id, method=!title?"POST":"PUT")
+		form#article-form(role="form", action=!title?"/articles":"/api/articles/" + id, method=!title?"POST":"PUT")
 			.form-group
 				label(for="title") Title
 				input#title.form-control(name="title", type="text", placeholder="Javascript is good", value=title)
