@@ -2,30 +2,94 @@ extends layout
 block page
 	- var menu = 'admin'
 block content
-	div.admin
+	.admin
 		if(articles.length === 0)
 			p
-				| Nothing to display. Add a new
-				a(href="/articles") article
+				| Nothing to display. Add a new 
+				a(href='/articles') article
 				|.
 		else
 			table.table.table-stripped
 				thead
 					tr
-						th(colspan="2") Actions
+						th.w-20 Actions
 						th Post Title
+						th Last Modified
 				tbody
 					each article, index in articles
-						tr(data-id=article.id, class=(!article.published)?"unpublished":"")
-							td.action
-								button.btn.btn-danger.btn-sm.remove(type="button")
-									span.glyphicon.glyphicon-remove(title="Remove")
-							td.action
-								button.btn.btn-default.btn-sm.publish(type="button")
-									span.glyphicon(class=(article.published)?"glyphicon-pause":"glyphicon-play", title=(article.published)?"Unpublish":"Publish")
-							td.action
-								button.btn.btn-default.btn-sm.edit(type="button")
-									span.glyphicon.glyphicon-edit
+						tr(data-id=article.id, class=(!article.published)?'unpublished':'')
+							td.action.btn-group(role='group', aria-label='actions')
+								button.btn.btn-danger.btn-sm.btn-secondary.remove(type='button')
+									i.fas.fa-trash-alt
+								button.btn.btn-default.btn-sm.btn-secondary.publish(type='button')
+									if(article.published)
+										i.fas.fa-eye
+									else
+										i.fas.fa-eye-slash
+								button.btn.btn-default.btn-sm.btn-secondary.edit(type='button')
+									i.fas.fa-pen-square
 							td= article.title
+							td= article.lastModified
 block append script
-	script(type="text/javascript", src="/static/js/admin.js" async)
+	script(src='https://kit.fontawesome.com/adc2274c5b.js', crossorigin='anonymous')
+	script.
+		var findTr = function(event){
+			var target = event.srcElement || event.target;
+			var $target = $(target);
+			var $tr = $target.parents('tr');
+			return $tr;
+		};
+
+		var remove = function(event){
+			var $tr = findTr(event);
+			var id = $tr.data('id');
+			$.ajax({
+				url: '/api/articles/' + id,
+				type: 'DELETE',
+				success: function(data, status, xhr){
+					$tr.remove();
+				},
+				error: function(xhr, status, err) {
+					alert(`delete article ${id} error:${err}`);
+				},
+			});
+		};
+
+		var update = function(event){
+			var $tr = findTr(event);
+			$tr.find('button').attr('disabled', 'disabled');
+			var data = {
+				published: $tr.hasClass('unpublished')
+			};
+			var id = $tr.attr('data-id');
+			$.ajax({
+				url: '/api/articles/' + id,
+				type: 'PUT',
+				contentType: 'application/json',
+				data: JSON.stringify({article: data}),
+				success: function(dataResponse, status, xhr){
+					$tr.find('button').removeAttr('disabled');
+					$('.alert').addClass('hidden');
+					if(data.published){
+						$tr.removeClass('unpublished').find('i.fa-eye-slash').removeClass('fa-eye-slash').addClass('fa-eye');
+					}else{
+						$tr.addClass('unpublished').find('i.fa-eye').removeClass('fa-eye').addClass('fa-eye-slash');
+					}
+				},
+				error: function(xhr, status, err) {
+					alert(`update article ${id} error:${err}`);
+				},	
+			});
+		};
+
+		var edit = function(event){
+			var $tr = findTr(event);
+			var id = $tr.attr('data-id');
+			location.href = '/articles?id=' + id;
+		};
+		$(document).ready(function(){
+			var $element = $('.admin tbody');
+			$element.on('click', 'button.edit', edit);
+			$element.on('click', 'button.remove', remove);
+			$element.on('click', 'button', update);
+		});

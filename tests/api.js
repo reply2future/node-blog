@@ -1,8 +1,6 @@
 const app = require('../bin/www'),
-	  path = require('path'),
-	  superagent = require('superagent'),
-	  expect = require('expect.js');
-	  crypto = require('crypto');
+	superagent = require('superagent'),
+	expect = require('expect.js');
 
 describe('api module', () => {
 	const testUser = {
@@ -12,39 +10,39 @@ describe('api module', () => {
 	};
 	const postData = {
 		article: {
-			id: "18b28be4f366d000689806a",
-			title: "test-article-title",
-			slug: "test-article-slug",
+			id: '18b28be4f366d000689806a',
+			title: 'test-article-title',
+			slug: 'test-article-slug',
 			tags: [
-				"test",
-				"article"
+				'test',
+				'article'
 			],
 			text: {
 				ops: [
-				{
-					insert: "test"
-				},
-				{
-					attributes: {
-						"link": "https://nodejs.org/en/docs/guides/nodejs-docker-webapp/"
+					{
+						insert: 'test'
 					},
-					insert: "文档"
-				},
-				{
-					insert: ",由于需求略作改动后，发现会因为无法找到node_modules的各项依赖而报错。\n\n"
-				},
-				{
-					insert: "供参考。\n"
-				}
+					{
+						attributes: {
+							'link': 'https://nodejs.org/en/docs/guides/nodejs-docker-webapp/'
+						},
+						insert: '文档'
+					},
+					{
+						insert: ',由于需求略作改动后，发现会因为无法找到node_modules的各项依赖而报错。\n\n'
+					},
+					{
+						insert: '供参考。\n'
+					}
 				]
 			},
 		}
-	}
+	};
 	const authorizedUser = superagent.agent();
 
 	before((done) => {
 		app.boot(done);
-	})
+	});
 
 	describe('authorize and authenticate', function(){
 
@@ -55,7 +53,7 @@ describe('api module', () => {
 					expect(res.status).to.equal(401);
 					done();
 				});
-		})
+		});
 
 		it('should login successfully by email and password', function(done){
 			authorizedUser
@@ -66,7 +64,7 @@ describe('api module', () => {
 					expect(res.redirects.length).to.equal(1);
 					done();
 				});					
-		})
+		});
 
 		it('should access the admin page', function(done){
 			authorizedUser
@@ -108,7 +106,7 @@ describe('api module', () => {
 					console.log(`fetch ${articles ? articles.length : 0} size of articles`);
 					done();
 				});
-		})
+		});
 
 		it('should listen successfully', function(done){
 			superagent
@@ -146,10 +144,10 @@ describe('api module', () => {
 				});	
 		});
 
-	})
+	});
 
 
 	after(function(){
 		app.shutdown();
-	})
-})
+	});
+});

@@ -1,14 +1,14 @@
 const express = require('express'),
-	  path = require('path'),
-	  logger = require('morgan'),
-	  cookieParser = require('cookie-parser'),
-	  session = require('express-session'),
-	  FileStore = require('session-file-store')(session),
-	  bodyParser = require('body-parser');
+	path = require('path'),
+	logger = require('morgan'),
+	cookieParser = require('cookie-parser'),
+	session = require('express-session'),
+	FileStore = require('session-file-store')(session),
+	bodyParser = require('body-parser');
 
 const routes = require('./routes/exports'),
-	  pages = routes.pages,
-	  api = routes.api;
+	pages = routes.pages,
+	api = routes.api;
 
 const app = express();
 app.locals.appTitle = 'My Blog';

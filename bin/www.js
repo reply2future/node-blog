@@ -1,12 +1,12 @@
 const app = require('../app'),
-	  http = require('http'),
-	  nodemailer = require('nodemailer'),
-	  fs = require('fs'),
-	  lowdb = require('lowdb'),
-	  FileAsync = require('lowdb/adapters/FileAsync'),
-	  lodashId = require('lodash-id'),
-	  path = require('path'),
-	  port = process.env.PORT || 3000;
+	http = require('http'),
+	nodemailer = require('nodemailer'),
+	fs = require('fs'),
+	lowdb = require('lowdb'),
+	FileAsync = require('lowdb/adapters/FileAsync'),
+	lodashId = require('lodash-id'),
+	path = require('path'),
+	port = process.env.PORT || 3000;
 
 app.set('port', port);
 const server = http.createServer(app);

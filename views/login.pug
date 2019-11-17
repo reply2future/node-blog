@@ -2,14 +2,15 @@ extends layout
 block page
 	- var menu = 'login'
 block content
-	.col-md-4.col-md-offset-4
+	.mx-auto(style='width: 300px')
 		h2 Login in
-		div= error
+		if (error)
+			div.bg-danger.text-light.my-2.p-2= error
 		div
-			form(action="/users/login", method="POST")
+			form(action='/users/login', method='POST')
 				p
-					input.form-control(name="email", type="text", placeholder="test@test.com")
+					input.form-control(name='email', type='text', placeholder='test@test.com')
 				p
-					input.form-control(name="password", type="password", placeholder="***")
+					input.form-control(name='password', type='password', placeholder='***')
 				p
-					button.btn.btn-lg.btn-primary.btn-block(type="submit") Log in
+					button.btn.btn-lg.btn-primary.btn-block(type='submit') Log in

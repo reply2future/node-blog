@@ -1,10 +1,12 @@
 extends layout
 block append link
-	link(href="/static/lib/quill/quill.bubble.css", rel="stylesheet")
+	link(rel='stylesheet', href='https://uicdn.toast.com/tui-editor/latest/tui-editor.css')
+	link(rel='stylesheet', href='https://uicdn.toast.com/tui-editor/latest/tui-editor-contents.css')
+	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css')
+	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css')
 block content
 	p
 		h3= title
-		#hidden-text.hidden= JSON.stringify(text)
 		#other-info
 			span.text-muted tags:
 				each value, index in tags
@@ -12,12 +14,18 @@ block content
 			span.text-muted create time: 
 			span.text-muted= new Date(lastModified)
 		hr
-		#editor
+		#editor(value=`${text}`)
 	#disqus_thread
 block append script
-	script(src="/static/lib/quill/quill.js", type="text/javascript" defer)
-	script(src="/static/js/article.js", type="text/javascript" defer)
+	script(src='https://uicdn.toast.com/tui-editor/latest/tui-editor-Editor-full.js')
 	script.
+		var editor = tui.Editor.factory({
+			el: document.querySelector('#editor'),
+			viewer: true,
+			height: '800px',
+			initialValue: $('#editor').attr('value'),
+			exts: ['table', 'uml']
+		});
 		var disqus_config = function () {
 			var url = window.location.href;
 			this.page.url = url;  // Replace PAGE_URL with your page's canonical URL variable
@@ -31,4 +39,4 @@ block append script
 		})();
 	noscript
 		| Please enable JavaScript to view the
-		a(href="https://disqus.com/?ref_noscript") comments powered by Disqus.
+		a(href='https://disqus.com/?ref_noscript') comments powered by Disqus.
