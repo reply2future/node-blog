@@ -12,7 +12,7 @@ block content
 			table.table.table-stripped
 				thead
 					tr
-						th.w-20 Actions
+						th Actions
 						th Post Title
 						th Last Modified
 				tbody
@@ -41,6 +41,9 @@ block append script
 		};
 
 		var remove = function(event){
+			if (!confirm("Are you sure you want to remove this article?")) {
+				return;
+			}
 			var $tr = findTr(event);
 			var id = $tr.data('id');
 			$.ajax({
@@ -91,5 +94,5 @@ block append script
 			var $element = $('.admin tbody');
 			$element.on('click', 'button.edit', edit);
 			$element.on('click', 'button.remove', remove);
-			$element.on('click', 'button', update);
+			$element.on('click', 'button.publish', update);
 		});

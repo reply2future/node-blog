@@ -10,8 +10,8 @@ block content
 		#other-info
 			span.text-muted tags:
 				each value, index in tags
-					span.mx-1.label.label-default= value
-			span.text-muted create time: 
+					span.mx-1.badge.badge-info= value
+			span.text-muted Last Modified: 
 			span.text-muted= new Date(lastModified)
 		hr
 		#editor(value=`${text}`)

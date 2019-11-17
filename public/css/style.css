@@ -23,10 +23,6 @@ hr {
 	margin: 1em 0;
 	padding: 0;
 }
-.mx-1 {
-	margin-left: 2px;
-	margin-right: 2px;
-}
 .form-group{
 	margin-right: 10px;
 }
@@ -42,17 +38,6 @@ hr {
 #info-alert{
 	display: none;
 }
-.glyphicon-remove,
-.glyphicon-pause,
-.glyphicon-play {
-	cursor: pointer;
-}
 tr.unpublished {
 	color: #cec1c2;
-}
-td.action {
-	width: 20px;
-}
-.alert {
-	margin-top: 20px;
 }
