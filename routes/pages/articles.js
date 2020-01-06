@@ -49,7 +49,7 @@ exports.postArticle = async (req, res, next) => {
 			tags: req.body.tags,
 			text: req.body.text,
 			published: false,
-			lastModified: Date.now()
+			lastModified: new Date()
 		}).write();
 		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
 	} catch(error) {

@@ -81,7 +81,7 @@ block append script
 				slug: slugValue,
 				tags: tagsValue,
 				text: editor.getMarkdown(),
-				lastModified: Date.now()
+				lastModified: new Date()
 			};
 
 			$.ajax({
