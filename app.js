@@ -4,7 +4,9 @@ const express = require('express'),
 	cookieParser = require('cookie-parser'),
 	session = require('express-session'),
 	FileStore = require('session-file-store')(session),
-	bodyParser = require('body-parser');
+	bodyParser = require('body-parser'),
+	favicon = require('serve-favicon');
+
 
 const routes = require('./routes/exports'),
 	pages = routes.pages,
@@ -24,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(logger('combined'));
 }
 
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
