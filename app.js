@@ -1,36 +1,39 @@
 const express = require('express'),
-	  mongoskin = require('mongoskin'),
-	  http = require('http'),
-	  path = require('path'),
-	  logger = require('morgan'),
-	  cookieParser = require('cookie-parser'),
-	  session = require('express-session'),
-	  FileStore = require('session-file-store')(session),
-//	  compression = require('compression'),
-	  bodyParser = require('body-parser');
+	path = require('path'),
+	logger = require('morgan'),
+	cookieParser = require('cookie-parser'),
+	session = require('express-session'),
+	FileStore = require('session-file-store')(session),
+	bodyParser = require('body-parser'),
+	favicon = require('serve-favicon');
+
 
 const routes = require('./routes/exports'),
-	  pages = routes.pages,
-	  api = routes.api;
+	pages = routes.pages,
+	api = routes.api;
 
 const app = express();
-app.locals.appTitle = 'node-blog';
+app.locals.appTitle = 'My Blog';
 
 app.set('trust proxy', true);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// app.use(compression());
-// app.use(express.static(path.join(__dirname, 'public')));
+if (process.env.NODE_ENV === 'development') {
+	app.use(logger('dev'));
+} else {
+	app.use(logger('combined'));
+}
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'));
 
-var fileStoreOpt = {
-	path: '/tmp/blog-session/',
+const fileStoreOpt = {
+	path: path.resolve('/tmp/blog-session')
 };
 
 app.use(session({
@@ -39,33 +42,23 @@ app.use(session({
 	saveUninitialized: false,
 	store: new FileStore(fileStoreOpt)
 }));
-// through docker --link the mongodb container
-// access mongodb using docker container alias
-const dbUrl = process.env.MONGOHQ_URL || 'mongodb://mongodb:27017/blog',
-	  db = mongoskin.db(dbUrl),
-	  collections = {
-		  articles: db.collection('articles'),
-		  users: db.collection('users')
-	  };
+
 
 // load data
 app.use(function(req, res, next){
-	if(!collections.articles || !collections.users)
-		return next(new Error('No collections.'));
-
-	req.collections = collections;
+	req.db = app.get('db');
 	return next();
 });
 
-// Authentication
+// authentication
 app.use(function(req, res, next){
-	if(req.session && req.session.admin)
-		res.locals.admin = true;
+	if(req.session && req.session.isAdmin)
+		res.locals.isAdmin = true;
 	next();
 });
 
 const authorize = function(req, res, next){
-	if(req.session && req.session.admin)
+	if(req.session && req.session.isAdmin)
 		return next();
 	else
 		return res.sendStatus(401);
@@ -114,6 +107,16 @@ app.put('/api/articles/:id', authorize, mergeArticleArgs, api.articles.editArtic
 app.delete('/api/articles/:id', authorize, api.articles.delArticleById);
 app.get('/api/articles', api.articles.getAllArticles);
 app.post('/api/articles', authorize, mergeArticleArgs, checkArticleArgs, api.articles.postArticle);
+
+// error handler
+app.use((err, req, res, next) => {
+	if (err) {
+		res.status(500).send({ message: err.message });
+		return;
+	}
+
+	next();
+});
 
 app.use(function(req, res){
 	res.sendStatus(404);

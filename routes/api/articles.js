@@ -1,17 +1,29 @@
-const mongo = require('mongoskin');
 /*
  * get all articles
  * {
  *   method: 'GET',
- *   url: '/api/articles'
+ *   url: '/api/articles',
+ *   querystring: {
+ *		offset:number,
+ *		limit: number,
+ *		order: 'desc'|'asc', // default order by time
+ *	}
  * }
  */
-exports.getAllArticles = function(req, res, next){
-	req.collections.articles.find({}).toArray(function(error, articles){
-		if(error)
-			return next(error);
-		res.status(200).json({message:articles});
-	});
+exports.getAllArticles = (req, res, next) => {
+	const _offset = req.query.offset || 0;
+	const _limit = req.query.limit || 10;
+	const _order = req.query.order || 'desc';
+
+	try {
+		const _articles = req.db.get('articles')
+			.filter({published: true})
+			.orderBy(['lastModified'], [_order]).slice(_offset, _limit)
+			.value();
+		res.status(200).json({message:_articles});
+	} catch (error) {
+		next(error);
+	}
 };
 /*
  * post article
@@ -20,13 +32,14 @@ exports.getAllArticles = function(req, res, next){
  *   url: '/api/articles'
  * }
  */
-exports.postArticle = function(req, res, next){
-	req.body.article.published = false;
-	req.collections.articles.insert(req.body.article, function(error, articleResponse){
-		if(error)
-			return next(error);
+exports.postArticle = async (req, res, next) => {
+	try {
+		req.body.article.published = false;
+		await req.db.get('articles').push(req.body.article).write();
 		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
-	});
+	} catch (error) {
+		next(error);
+	}
 };
 
 /*
@@ -36,17 +49,16 @@ exports.postArticle = function(req, res, next){
  *   url: '/api/articles/:id'
  * }
  */
-exports.editArticleById = function(req, res, next){
-	if(!req.params.id)
-		return res.status(400).json({message:'No article ID.'});
-
-	req.collections.articles.updateById(req.params.id, {$set: req.body.article}, function(error, result){
-		if(error)
-			return next(error);
-		res.status(200).json({
-			message:result
-		});
-	});
+exports.editArticleById = async (req, res, next) => {
+	try {
+		if(!req.params.id) {
+			return res.status(400).json({message:'No article ID.'});
+		}
+		await req.db.get('articles').updateById(req.params.id, req.body.article).write();
+		res.status(200).json({message: 'Article was edited.'});
+	} catch(error) {
+		next(error);
+	}
 };
 
 /*
@@ -56,15 +68,14 @@ exports.editArticleById = function(req, res, next){
  *   url: '/api/articles/:id'
  * }
  */
-exports.delArticleById = function(req, res, next){
-	if(!req.params.id)
-		return res.status(400).json({message:'No article ID.'});
-
-	req.collections.articles.removeById(req.params.id, function(error, count){
-		if(error)
-			return next(error);
-		res.status(200).json({
-			message: count
-		});
-	});
+exports.delArticleById = async (req, res, next) => {
+	try {
+		if(!req.params.id) {
+			return res.status(400).json({message:'No article ID.'});
+		}
+		await req.db.get('articles').removeById(req.params.id).write();
+		res.status(200).json({message: 'Article was deleted'});
+	} catch(error) {
+		next(error);
+	}
 };

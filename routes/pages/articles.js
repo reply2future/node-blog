@@ -8,19 +8,21 @@
  *   option: 'id='
  * }
  */
-exports.getPostView = function(req, res, next){
-	if(!req.query.id){
-		res.render('post');
-	}else{
-		// fill view with article
-		req.collections.articles.findById(req.query.id, function(error, article){
-			if(error)
-				return next(error);
+exports.getPostView = (req, res, next) => {
+
+	try {
+		if(!req.query.id){
+			res.render('post');
+		}else{
+			// fill view with article
+			const article = req.db.get('articles').getById(req.query.id).value();
 
 			if(!article)
 				return res.sendStatus(404);
 			res.render('post', article);
-		});		
+		} 
+	} catch (error) {
+		next(error);
 	}
 };
 
@@ -35,26 +37,24 @@ exports.getPostView = function(req, res, next){
  * }
  */
 
-exports.postArticle = function(req, res, next){
-	// return res.status(403).json({ message: ' Deprecated: Please use /api/articles instead.'});
+exports.postArticle = async (req, res, next) => {
 
-	if(!req.body.title || !req.body.slug || !req.body.text){
-		return res.status(400).json({ message: 'Please fill title, slug and text.'});
-	}
-
-	req.collections.articles.insert({
-		title: req.body.title,
-		slug: req.body.slug,
-		tags: req.body.tags,
-		text: req.body.text,
-		published: false,
-		lastModified: new Date()
-	}, function(error, articleResponse){
-		if(error)
-			return next(error);
-
+	try {
+		if(!req.body.title || !req.body.slug || !req.body.text){
+			return res.status(400).json({ message: 'Please fill title, slug and text.'});
+		}
+		await req.db.get('articles').insert({
+			title: req.body.title,
+			slug: req.body.slug,
+			tags: req.body.tags,
+			text: req.body.text,
+			published: false,
+			lastModified: new Date()
+		}).write();
 		res.status(201).json({ message: 'Article was added. Publish it on Admin page.'});
-	});
+	} catch(error) {
+		next(error);
+	}
 };
 
 /*
@@ -65,16 +65,16 @@ exports.postArticle = function(req, res, next){
  *   url: '/articles/:slug'
  * }
  */
-exports.getArticleBySlug = function(req, res, next){
-	if(!req.params.slug)
-		return res.status(400).json({message: 'No article slug.'});
-
-	req.collections.articles.findOne({slug: req.params.slug}, function(error, article){
-		if(error)
-			return next(error);
-
+exports.getArticleBySlug = (req, res, next) => {
+	try {
+		if(!req.params.slug) {
+			return res.status(400).json({message: 'No article slug.'});
+		}
+		const article = req.db.get('articles').find({slug: req.params.slug}).value();
 		if(!article || !article.published)
 			return res.sendStatus(404);
 		res.render('article', article);
-	});
+	} catch(error) {
+		next(error);
+	}
 };

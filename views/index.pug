@@ -7,19 +7,20 @@ block append headers
 		.jumbotron
 			h1 -Now or Never-
 			p Welcome to my blog! BY&nbsp;
-				a(href="https://github.com/feimeizhan") @feimeizhan
+				a(href='https://github.com/feimeizhan') @feimeizhan
 				|. Please enjoy.
 block content
 	if(articles.length === 0)
 		| There's no published content yet.
-		a(href="/users/login") Log in 
+		a(href='/users/login') Log in 
 		| to post and publish.
 	else
 		each article, index in articles
 			.list-group
-				a.list-group-item(href="/articles/" + article.slug)
-					h4.list-group-item-heading= article.title
-					small.pull-right.text-muted= article.lastModified.toDateString()
+				a.list-group-item.mt-2(href='/articles/' + article.slug)
+					.d-flex.w-100.justify-content-between
+						h4.mb-2= article.title
+						small.text-muted= new Date(article.lastModified)
 					p.text-muted tags: 
 						each value, index in article.tags
-							span.mx-1.label.label-default= value
+							span.mx-1.badge.badge-info= value

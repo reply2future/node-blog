@@ -1,0 +1,26 @@
+version: '3'
+services:
+  server:
+    container_name: server-ctn    
+    image: keymetrics/pm2:8-alpine
+    working_dir: /www  
+    volumes:
+      - serv_src:/www
+      - /www/node_modules  
+    ports:
+      - 3000:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+    command: >
+      sh -c "npm install --only=production
+      && pm2-runtime start ecosystem.config.js --env production"
+volumes:
+  serv_src:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/mervyn/project/node-blog

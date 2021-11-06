@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 /*
  * get login view 
  * {
@@ -5,35 +7,44 @@
  *   url: '/users/login'
  * }
  */
-exports.getLoginView = function(req, res, next){
+exports.getLoginView = (req, res) => {
 	res.render('login');
 };
 
 /*
  * post login
+ *
+ * password add salt.
  * 
  * {
  *   method: 'POST',
  *   url: '/users/login'
  * }
  */
-exports.postLogin = function(req, res, next){
-	if(!req.body.email || !req.body.password){
-		return res.render('login', { error: 'Email or Password is empty'});
-	}
+exports.postLogin = (req, res, next) => {
 
-	req.collections.users.findOne({
-		email: req.body.email,
-		password: req.body.password
-	}, function(error, user){
-		if(error)
-			return next(error);
-		if(!user)
+	try {
+		if(!req.body.email || !req.body.password){
+			return res.render('login', { error: 'Email or Password is empty'});
+		}
+
+		if (req.body.password.length !== 32) {
+			req.body.password = crypto.createHash('md5').update(req.body.password).digest('hex');
+		}
+
+		const _user = req.db.get('users').find({
+			email: req.body.email,
+			password: req.body.password
+		}).value();
+		if(!_user) {
 			return res.render('login', {error: 'Incorrect email and password combination.'});
-		req.session.user = user;
-		req.session.admin = user.admin;
+		}
+		req.session.user = _user;
+		req.session.isAdmin = _user.isAdmin;
 		res.redirect('/users/admin');
-	});
+	} catch(error) {
+		next(error);
+	}
 };
 
 /*
@@ -43,7 +54,7 @@ exports.postLogin = function(req, res, next){
  *   url: '/users/logout'
  * }
  */
-exports.logout = function(req, res, next){
+exports.logout = (req, res) => {
 	req.session.destroy();
 	res.redirect('/');
 };
@@ -56,11 +67,11 @@ exports.logout = function(req, res, next){
  *   url: '/users/admin'
  * }
  */
-exports.getAdminView = function(req, res, next){
-	req.collections.articles.find({}, {sort:{_id: -1}}).toArray(function(error, articles){
-		if(error)
-			return next(error);
-
-		res.render('admin', { articles: articles });
-	});
+exports.getAdminView = (req, res, next) => {
+	try {
+		const _articles = req.db.get('articles').value();
+		res.render('admin', { articles: _articles });
+	} catch(error) {
+		next(error);
+	}
 };
