@@ -1,7 +1,7 @@
 # Node Blog
 
 [![Build Status](https://travis-ci.org/feimeizhan/node-blog.svg?branch=simplify)](https://travis-ci.org/feimeizhan/node-blog)
-[![Coverage Status](https://coveralls.io/repos/github/feimeizhan/node-blog/badge.svg?branch=simplify)](https://coveralls.io/github/feimeizhan/node-blog?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/feimeizhan/node-blog/badge.svg?branch=master)](https://coveralls.io/github/feimeizhan/node-blog?branch=master)
 
 A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with docker.Occupies less resources and simple.
 
@@ -10,14 +10,13 @@ A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with 
   - docker>=17.0-ce
   - docker-compose>=1.6
 - Node.js
-  - node>=6
-  - npm>=3
-- make
+  - node>=16
+  - npm>=6
 
 ## Usage
 
 ### Configuration
-- You need create a new file named **ecosystem.config.js** in the project root directory.Such as template.
+- You need create a new file named **docker-compose.yml** in the project root directory.Such as template.
 - Use your Disqus comment plugin
 **IMPORTANT:** use your own **embed.js** url to replace mine in the *views/article.pug*
 ```javascript

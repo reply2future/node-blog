@@ -6,7 +6,7 @@ const lowdb = require('lowdb')
 const FileAsync = require('lowdb/adapters/FileAsync')
 const lodashId = require('lodash-id')
 const path = require('path')
-const port = process.env.PORT || 3000
+const port = parseInt(process.env.PORT || 3000)
 
 app.set('port', port)
 const server = http.createServer(app)
