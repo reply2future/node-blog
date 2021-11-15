@@ -1,5 +1,6 @@
 # Config file which contain private information
 docker-compose.env
+docker-compose.yml
 
 # Logs
 logs

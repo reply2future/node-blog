@@ -1,0 +1,21 @@
+# node
+node_modules/
+
+# docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.yml.template
+
+# ci/cd
+.travis.yml
+
+# git
+.gitignore
+.github/
+
+# ide
+.vscode/
+
+# project
+db/

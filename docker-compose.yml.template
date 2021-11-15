@@ -1,0 +1,39 @@
+version: '3'
+services:
+  server:
+    container_name: server-ctn
+    # use your image
+    image: feimeizhan/node-blog:3.0.0
+    volumes:
+      - db:/usr/src/app/db
+    environment:
+      # use your configuration
+      NODE_ENV: production
+      NODE_PORT: 3000
+      # login username
+      ADMIN_USER: your login username
+      # login password
+      ADMIN_PWD: your login password
+      COOKIE_SECRET: 3DH3J-UI123-NFD12-KBN11
+      SESSION_SECRET: M332IA-HA909-3AAW1-ND2Q1
+      # your post mail
+      MAIL_HOST: smtp.zoho.com
+      MAIL_USER: node_blog
+      MAIL_PASS: password
+      MAIL_FROM: your_account@zoho.com.cn
+      MAIL_TO: your_email@test.com
+    ports:
+      - 3000:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      # your database dir
+      device: /db
