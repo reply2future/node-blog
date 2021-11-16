@@ -1,6 +1,6 @@
 # Node Blog
 
-[![Build Status](https://travis-ci.org/feimeizhan/node-blog.svg?branch=simplify)](https://travis-ci.org/feimeizhan/node-blog)
+[![Build Status](https://travis-ci.org/feimeizhan/node-blog.svg?branch=master)](https://travis-ci.org/feimeizhan/node-blog)
 [![Coverage Status](https://coveralls.io/repos/github/feimeizhan/node-blog/badge.svg?branch=master)](https://coveralls.io/github/feimeizhan/node-blog?branch=master)
 
 A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with docker.Occupies less resources and simple.
