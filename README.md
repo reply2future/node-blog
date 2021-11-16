@@ -11,7 +11,7 @@ A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with 
   - docker-compose>=1.6
 - Node.js
   - node>=16
-  - npm>=6
+  - npm>=8
 
 ## Usage
 
