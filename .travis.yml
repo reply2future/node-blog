@@ -6,8 +6,8 @@ node_js:
 services:
   - docker
 
-before_install:
-  - make docker-deploy 
+# before_install:
+  # - npm ci 
 
 script:
-  - make docker-test
+  - npm run test
