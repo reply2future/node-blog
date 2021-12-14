@@ -17,10 +17,10 @@ block content
 	else
 		each article, index in articles
 			.list-group
-				a.list-group-item.mt-2(href='/articles/' + article.slug)
+				.list-group-item.mt-2
 					.d-flex.w-100.justify-content-between
-						h4.mb-2= article.title
-						small.text-muted= new Date(article.lastModified)
+						a.mb-2(href='/articles/' + article.slug)= article.title
+						small.text-muted= (new Date(article.lastModified)).toLocaleString()
 					p.text-muted tags: 
 						each value, index in article.tags
 							span.mx-1.badge.badge-info= value

@@ -1,6 +1,6 @@
 {
   "name": "node-blog",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "a blog builded with Node.js,lowdb etc.",
   "main": "app.js",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "test": "./node_modules/mocha/bin/mocha --exit tests/*.js",
+    "test": "npx mocha --exit --ui bdd tests --recursive",
     "fix": "npx standard --fix",
     "build-img:linux": "docker build ./ -t feimeizhan/$npm_package_name:$npm_package_version",
     "push-img:linux": "docker push feimeizhan/$npm_package_name:$npm_package_version"
