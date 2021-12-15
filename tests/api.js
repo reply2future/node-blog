@@ -1,3 +1,7 @@
+(function setUnitTestEnv () {
+  process.env.DB_FILE_NAME = 'unit_test.json'
+})()
+
 const app = require('../bin/www')
 const superagent = require('superagent')
 const expect = require('expect.js')

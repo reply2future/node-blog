@@ -27,12 +27,13 @@ const shutdown = () => {
 
 // database init
 const dbDir = './db'
+const dbFilename = process.env.DB_FILE_NAME || 'data.json'
 
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir)
 }
 
-lowdb(new FileAsync(path.join(dbDir, 'data.json')))
+lowdb(new FileAsync(path.join(dbDir, dbFilename)))
   .then(db => {
     db._.mixin(lodashId)
     app.set('db', db)
