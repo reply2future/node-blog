@@ -24,3 +24,15 @@ block content
 					p.text-muted tags: 
 						each value, index in article.tags
 							span.mx-1.badge.badge-info= value
+	nav.mt-4(aria-label='Page navigation')
+		ul.pagination.justify-content-center
+			li.page-item
+				a.page-link(href='?offset=' + (Math.max(currentPageNum - 2, 0) * 10) aria-label='Previous')
+					span(aria-hidden='true') &laquo;
+			- var n = 0
+			while n < totalPageNum
+				li.page-item
+					a.page-link(href='?offset=' + n * 10)= ++n
+			li.page-item
+				a.page-link(href='?offset=' + (currentPageNum * 10) aria-label='Next')
+					span(aria-hidden='true') &raquo;
