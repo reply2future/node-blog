@@ -34,7 +34,7 @@ exports.getAllArticles = (req, res, next) => {
  */
 exports.postArticle = async (req, res, next) => {
   try {
-    req.body.article.published = false
+    req.body.article.published = req.body.article.published || false
     await req.db.get('articles').push(req.body.article).write()
     res.status(201).json({ message: 'Article was added. Publish it on Admin page.' })
   } catch (error) {
