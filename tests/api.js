@@ -46,7 +46,17 @@ describe('api module', () => {
   let articles
 
   before((done) => {
-    app.boot(done)
+    app.boot(() => {
+      authorizedUser
+        .post('http://localhost:' + app.port + '/users/login')
+        .send(testUser)
+        .end(function (err, res) {
+          expect(err).to.be.equal(null)
+          expect(res.status).to.equal(200)
+          expect(res.redirects.length).to.equal(1)
+          done()
+        })
+    })
   })
 
   describe('authorize and authenticate', function () {
@@ -61,7 +71,7 @@ describe('api module', () => {
     })
 
     it('should login successfully by email and password', function (done) {
-      authorizedUser
+      superagent.agent()
         .post('http://localhost:' + app.port + '/users/login')
         .send(testUser)
         .end(function (err, res) {
