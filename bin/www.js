@@ -70,8 +70,8 @@ if (process.env.NODE_ENV === 'production') {
     })
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: process.env.EMAIL_TO,
+      from: process.env.MAIL_FROM,
+      to: process.env.MAIL_TO,
       subject: 'uncaughtException',
       text: `There is an uncaughtException in the node-blog${err}`
     }
