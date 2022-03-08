@@ -38,7 +38,7 @@ module.exports = {
   // retries: 1,
   slow: '75',
   sort: false,
-  // spec: ['test/**/*.spec.js'], // the positional arguments!
+  spec: ['tests/**/*.js'], // the positional arguments!
   // timeout: '2000', // same as "timeout: '2s'"
   timeout: false, // same as "timeout: 0"
   'trace-warnings': true, // node flags ok

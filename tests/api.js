@@ -1,5 +1,9 @@
 (function setUnitTestEnv () {
   process.env.DB_FILE_NAME = 'unit_test.json'
+  // delete all data
+  const fs = require('fs')
+  const path = require('path')
+  fs.unlinkSync(path.join('./db', process.env.DB_FILE_NAME))
 })()
 
 const app = require('../bin/www')
@@ -17,6 +21,7 @@ describe('api module', () => {
       id: '18b28be4f366d000689806a',
       title: 'test-article-title',
       slug: 'test-article-slug',
+      published: true, // for unit test
       tags: [
         'test',
         'article'
@@ -46,7 +51,17 @@ describe('api module', () => {
   let articles
 
   before((done) => {
-    app.boot(done)
+    app.boot(() => {
+      authorizedUser
+        .post('http://localhost:' + app.port + '/users/login')
+        .send(testUser)
+        .end(function (err, res) {
+          expect(err).to.be.equal(null)
+          expect(res.status).to.equal(200)
+          expect(res.redirects.length).to.equal(1)
+          done()
+        })
+    })
   })
 
   describe('authorize and authenticate', function () {
@@ -61,7 +76,7 @@ describe('api module', () => {
     })
 
     it('should login successfully by email and password', function (done) {
-      authorizedUser
+      superagent.agent()
         .post('http://localhost:' + app.port + '/users/login')
         .send(testUser)
         .end(function (err, res) {
@@ -90,7 +105,17 @@ describe('api module', () => {
         .end(function (err, res) {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(201)
-          done()
+
+          superagent
+            .get('http://localhost:' + app.port + '/api/articles')
+            .end(function (err, res) {
+              expect(err).to.be.equal(null)
+              expect(res.status).to.equal(200)
+              articles = res.body.message
+              expect(articles.length).to.equal(1)
+              expect(articles[0].lastModified).to.be.a('string')
+              done()
+            })
         })
     })
 
@@ -113,6 +138,7 @@ describe('api module', () => {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(200)
           articles = res.body.message
+          expect(articles.length).to.equal(1)
           console.log(`fetch ${articles ? articles.length : 0} size of articles`)
           done()
         })

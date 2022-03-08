@@ -43,8 +43,11 @@ app.use(session({
 }))
 
 // load data
-app.use(function (req, res, next) {
-  req.db = app.get('db')
+app.use(async function (req, res, next) {
+  const db = app.get('db')
+  // update the database state
+  await db.read()
+  req.db = db
   return next()
 })
 
