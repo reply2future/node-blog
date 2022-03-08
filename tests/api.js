@@ -3,7 +3,9 @@
   // delete all data
   const fs = require('fs')
   const path = require('path')
-  fs.unlinkSync(path.join('./db', process.env.DB_FILE_NAME))
+  const unitTestDbPath = path.join('./db', process.env.DB_FILE_NAME)
+  if (!fs.existsSync(unitTestDbPath)) return
+  fs.unlinkSync(unitTestDbPath)
 })()
 
 const app = require('../bin/www')
