@@ -57,10 +57,10 @@ describe('api module', () => {
       authorizedUser
         .post('http://localhost:' + app.port + '/users/login')
         .send(testUser)
+        .redirects(1)
         .end(function (err, res) {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(200)
-          expect(res.redirects.length).to.equal(1)
           done()
         })
     })
@@ -81,10 +81,10 @@ describe('api module', () => {
       superagent.agent()
         .post('http://localhost:' + app.port + '/users/login')
         .send(testUser)
+        .redirects(1)
         .end(function (err, res) {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(200)
-          expect(res.redirects.length).to.equal(1)
           done()
         })
     })
