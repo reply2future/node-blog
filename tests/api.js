@@ -3,7 +3,9 @@
   // delete all data
   const fs = require('fs')
   const path = require('path')
-  fs.unlinkSync(path.join('./db', process.env.DB_FILE_NAME))
+  const unitTestDbPath = path.join('./db', process.env.DB_FILE_NAME)
+  if (!fs.existsSync(unitTestDbPath)) return
+  fs.unlinkSync(unitTestDbPath)
 })()
 
 const app = require('../bin/www')
@@ -55,10 +57,10 @@ describe('api module', () => {
       authorizedUser
         .post('http://localhost:' + app.port + '/users/login')
         .send(testUser)
+        .redirects(1)
         .end(function (err, res) {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(200)
-          expect(res.redirects.length).to.equal(1)
           done()
         })
     })
@@ -79,10 +81,10 @@ describe('api module', () => {
       superagent.agent()
         .post('http://localhost:' + app.port + '/users/login')
         .send(testUser)
+        .redirects(1)
         .end(function (err, res) {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(200)
-          expect(res.redirects.length).to.equal(1)
           done()
         })
     })

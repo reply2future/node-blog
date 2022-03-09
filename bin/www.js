@@ -13,12 +13,12 @@ const server = http.createServer(app)
 
 // done is use to test
 const boot = (done) => {
-  server.listen(port, () => {
-    console.log('Node blog is listenning')
-    if (typeof done === 'function') {
-      done()
-    }
-  })
+  initDb().then(() => {
+    server.listen(port, () => {
+      if (typeof done === 'function') done()
+      console.log('Node blog is listenning')
+    })
+  }).catch(done)
 }
 
 const shutdown = () => {
@@ -26,18 +26,17 @@ const shutdown = () => {
 }
 
 // database init
-const dbDir = './db'
-const dbFilename = process.env.DB_FILE_NAME || 'data.json'
+async function initDb () {
+  const dbDir = './db'
+  const dbFilename = process.env.DB_FILE_NAME || 'data.json'
 
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir)
-}
+  if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir)
 
-lowdb(new FileAsync(path.join(dbDir, dbFilename)))
-  .then(db => {
+  try {
+    const db = await lowdb(new FileAsync(path.join(dbDir, dbFilename)))
     db._.mixin(lodashId)
     app.set('db', db)
-    return db.defaults({
+    await db.defaults({
       articles: [],
       users: [{
         email: process.env.ADMIN_USER || 'test@gmail.com',
@@ -45,16 +44,11 @@ lowdb(new FileAsync(path.join(dbDir, dbFilename)))
         isAdmin: true
       }]
     }).write()
-  })
-  .then(() => {
-    if (require.main === module) {
-      boot()
-    }
-  })
-  .catch(err => {
-    console.error(`Server error:${err.message}`)
+  } catch (err) {
+    console.error(`Init database error:${err.message}`)
     process.exit(-1)
-  })
+  }
+}
 
 if (process.env.NODE_ENV === 'production') {
   process.on('uncaughtException', (err) => {
@@ -70,8 +64,8 @@ if (process.env.NODE_ENV === 'production') {
     })
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: process.env.EMAIL_TO,
+      from: process.env.MAIL_FROM,
+      to: process.env.MAIL_TO,
       subject: 'uncaughtException',
       text: `There is an uncaughtException in the node-blog${err}`
     }
@@ -85,6 +79,11 @@ if (process.env.NODE_ENV === 'production') {
     })
     process.exit(-2)
   })
+}
+
+// normal start up
+if (require.main === module) {
+  boot()
 }
 
 exports.boot = boot
