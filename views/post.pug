@@ -1,9 +1,9 @@
 extends layout
 block append link
-	link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tui-editor/1.4.6/tui-editor.min.css')
-	link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tui-editor/1.4.6/tui-editor-contents.min.css')
-	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css')
-	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css')
+	link(rel='stylesheet' href='https://cdn.bootcdn.net/ajax/libs/tui-editor/1.4.6/tui-editor.min.css')
+	link(rel='stylesheet' href='https://cdn.bootcdn.net/ajax/libs/tui-editor/1.4.6/tui-editor-contents.min.css')
+	link(rel='stylesheet', href='https://cdn.bootcdn.net/ajax/libs/codemirror/5.48.4/codemirror.css')
+	link(rel='stylesheet', href='https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/styles/github.min.css')
 block page
 	- var menu = 'post'
 block content
@@ -33,7 +33,7 @@ block content
 				button.btn.btn-primary(type='submit') Save 
 
 block append script
-	script(src='https://cdnjs.cloudflare.com/ajax/libs/tui-editor/1.4.6/tui-editor-Editor-full.min.js')
+	script(src='https://cdn.bootcdn.net/ajax/libs/tui-editor/1.4.6/tui-editor-Editor-full.min.js')
 	script.
 		var editor = new tui.Editor({
 			el: document.querySelector('#editor'),
