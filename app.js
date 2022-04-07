@@ -1,4 +1,5 @@
 const express = require('express')
+const os = require('os')
 const path = require('path')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
@@ -32,7 +33,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your cookie secret'))
 
 const fileStoreOpt = {
-  path: path.resolve('/tmp/blog-session')
+  path: path.join(os.tmpdir(), '/tmp/blog-session')
 }
 
 app.use(session({
