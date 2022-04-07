@@ -12,7 +12,7 @@ exports.getIndexView = (req, res, next) => {
 
   try {
     const _totalArticles = req.db.get('articles').filter({ published: true }).size().value()
-    const _currentPageNum = _offset % _limit + 1
+    const _currentPageNum = _offset / _limit + 1
     const _totalPageNum = Math.ceil(_totalArticles / _limit)
     const _articles = req.db.get('articles')
       .filter({ published: true })
