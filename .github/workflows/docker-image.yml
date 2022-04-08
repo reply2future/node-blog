@@ -79,6 +79,7 @@ jobs:
           MAIL_TO: ${{ secrets.MAIL_TO }}
           MAIL_USER: ${{ secrets.MAIL_USER }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          DB_PATH: ${{ secrets.DB_PATH }}
         with:
           input: docker-compose.yml.template
           output: docker-compose.yml
@@ -89,5 +90,6 @@ jobs:
           ssh_private_key: ${{ secrets.REMOTE_PRV_KEY }}
           ssh_public_key: ${{ secrets.REMOTE_KNOWN_HOST }}
           remote_docker_port: ${{ secrets.REMOTE_PORT }}
+          deploy_path: ${{ secrets.REMOTE_DEPLOY_PATH }}
           copy_stack_file: true
           args: up -d
