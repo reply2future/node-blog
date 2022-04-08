@@ -41,6 +41,7 @@ jobs:
       - run: npm test
       
   build:
+    needs: unit-test
     if: github.event_name == 'push' 
     runs-on: ubuntu-latest
 
@@ -60,6 +61,7 @@ jobs:
           tags: feimeizhan/node-blog:${{ github.sha }}
 
   deploy:
+    needs: build
     if: github.event_name == 'push' 
     runs-on: ubuntu-latest
 
