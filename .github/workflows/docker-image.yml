@@ -90,3 +90,4 @@ jobs:
           ssh_public_key: ${{ secrets.REMOTE_KNOWN_HOST }}
           remote_docker_port: ${{ secrets.REMOTE_PORT }}
           copy_stack_file: true
+          args: up -d
