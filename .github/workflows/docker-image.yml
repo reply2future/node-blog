@@ -83,13 +83,12 @@ jobs:
         with:
           input: docker-compose.yml.template
           output: docker-compose.yml
-      - name: Docker Compose Deployment
-        uses: wshihadeh/docker-deployment-action@v2
+      - name: Copy docker-compose.yml via ssh key
+        uses: appleboy/scp-action@master
         with:
-          remote_docker_host: ${{ secrets.REMOTE_USERNAME }}@${{ secrets.REMOTE_HOST }}
-          ssh_private_key: ${{ secrets.REMOTE_PRV_KEY }}
-          ssh_public_key: ${{ secrets.REMOTE_KNOWN_HOST }}
-          remote_docker_port: ${{ secrets.REMOTE_PORT }}
-          deploy_path: ${{ secrets.REMOTE_DEPLOY_PATH }}
-          copy_stack_file: true
-          args: up -d
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USERNAME }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.REMOTE_PRV_KEY }}
+          source: "docker-compose.yml"
+          target: ${{ secrets.REMOTE_DEPLOY_PATH }}
