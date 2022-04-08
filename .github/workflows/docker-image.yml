@@ -58,3 +58,35 @@ jobs:
         with:
           push: true
           tags: feimeizhan/node-blog:${{ github.sha }}
+
+  deploy:
+    if: github.event_name == 'push' 
+    runs-on: ubuntu-latest
+
+    name: Deploy the service to remote
+    steps:
+      - uses: actions/checkout@master
+      - name: Generate the docker-compose.yml
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+          IMAGE_NAME: feimeizhan/node-blog:${{ github.sha }}
+          ADMIN_PWD: ${{ secrets.ADMIN_PWD }}
+          ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_HOST: ${{ secrets.MAIL_HOST }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        with:
+          input: docker-compose.yml.template
+          output: docker-compose.yml
+      - name: Docker Compose Deployment
+        uses: wshihadeh/docker-deployment-action@v2
+        with:
+          remote_docker_host: ${{ secrets.REMOTE_USERNAME }}@${{ secrets.REMOTE_HOST }}
+          ssh_private_key: ${{ secrets.REMOTE_PRV_KEY }}
+          ssh_public_key: ${{ secrets.REMOTE_KNOWN_HOST }}
+          remote_docker_port: ${{ secrets.REMOTE_PORT }}
+          copy_stack_file: true
