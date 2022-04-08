@@ -92,3 +92,11 @@ jobs:
           key: ${{ secrets.REMOTE_PRV_KEY }}
           source: "docker-compose.yml"
           target: ${{ secrets.REMOTE_DEPLOY_PATH }}
+      - name: Deploy service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USERNAME }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.REMOTE_PRV_KEY }}
+          script: docker-compose up -d
