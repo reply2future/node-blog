@@ -7,7 +7,7 @@ button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarS
 			a.nav-link(href="/")
 				| Home 
 				span.sr-only (current)
-		if(admin || menu === 'admin' || menu === 'post')
+		if(isAdmin || menu === 'admin' || menu === 'post')
 			li(class=(menu === 'post')?'nav-item active':'nav-item')
 				a.nav-link(href='/articles') Post
 			li(class=(menu === 'admin')?'nav-item active':'nav-item')
