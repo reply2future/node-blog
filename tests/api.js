@@ -11,6 +11,7 @@
 const app = require('../bin/www')
 const superagent = require('superagent')
 const expect = require('expect.js')
+const db = require('../db')
 
 describe('api module', () => {
   const testUser = {
@@ -179,6 +180,49 @@ describe('api module', () => {
         .end(function (err, res) {
           expect(err).to.be.equal(null)
           expect(res.status).to.equal(200)
+          done()
+        })
+    })
+  })
+
+  describe('search module', function () {
+    before(function (done) {
+      db.getDbInstance().then(function (dbInstance) {
+        return dbInstance.get('articles').push(...[
+          { title: 'eat some food', text: 'can do test', slug: 'test1' },
+          { title: 'eat test food', text: 'can do', slug: 'test2' },
+          { title: 'eat test food', text: 'can do test', slug: 'test3' },
+          { title: 'eat some food', text: 'can do', slug: 'test4' }
+        ]).write()
+      }).then(() => done()).catch(done)
+    })
+    // it would clear data when restart unit test, so no need to do anything here
+    // after(function (done) {
+    // })
+    it('should not match anything', function (done) {
+      superagent
+        .post('http://localhost:' + app.port + '/api/search')
+        .send({ keyword: 'not match' })
+        .end(function (err, res) {
+          expect(err).to.be.equal(null)
+          expect(res.status).to.equal(200)
+          const matches = res.body.message
+          expect(matches.length).to.equal(0)
+          done()
+        })
+    })
+    it('should search successfully', function (done) {
+      superagent
+        .post('http://localhost:' + app.port + '/api/search')
+        .send({ keyword: 'test' })
+        .end(function (err, res) {
+          expect(err).to.be.equal(null)
+          expect(res.status).to.equal(200)
+          const matches = res.body.message
+          expect(matches.length).to.equal(3)
+          matches.forEach(m => {
+            expect(m.link).to.contain('/articles/test')
+          })
           done()
         })
     })

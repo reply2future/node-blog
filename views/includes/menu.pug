@@ -17,6 +17,6 @@ button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarS
 		else
 			li(class=(menu === 'login')?'nav-item active':'nav-item')
 				a.nav-link(href='/users/login') Log in
-	form.form-inline.my-2.my-lg-0
-		input.form-control.mr-sm-2(type="search" placeholder="Search" aria-label="Search")
-		button.btn.btn-outline-success.my-2.my-sm-0(type="submit") Search
+	#search-bar-form.form-inline.my-2.my-lg-0
+		input#search-bar-input.form-control.dropdown-toggle.mr-sm-2(name="keyword" type="search" placeholder="Search" aria-label="Search" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+		#search-bar-dropdown.dropdown-menu.dropdown-menu-right
