@@ -100,6 +100,8 @@ app.delete('/api/articles/:id', authorize, api.articles.delArticleById)
 app.get('/api/articles', api.articles.getAllArticles)
 app.post('/api/articles', authorize, mergeArticleArgs, checkArticleArgs, api.articles.postArticle)
 
+app.post('/api/search', api.search.search)
+
 // error handler
 app.use((err, req, res, next) => {
   if (err) {

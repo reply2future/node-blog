@@ -1,12 +1,8 @@
 const app = require('../app')
 const http = require('http')
 const nodemailer = require('nodemailer')
-const fs = require('fs')
-const lowdb = require('lowdb')
-const FileAsync = require('lowdb/adapters/FileAsync')
-const lodashId = require('lodash-id')
-const path = require('path')
 const port = parseInt(process.env.PORT || 3000)
+const db = require('../db')
 
 app.set('port', port)
 const server = http.createServer(app)
@@ -30,20 +26,9 @@ async function initDb () {
   const dbDir = './db'
   const dbFilename = process.env.DB_FILE_NAME || 'data.json'
 
-  if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir)
-
   try {
-    const db = await lowdb(new FileAsync(path.join(dbDir, dbFilename)))
-    db._.mixin(lodashId)
-    app.set('db', db)
-    await db.defaults({
-      articles: [],
-      users: [{
-        email: process.env.ADMIN_USER || 'test@gmail.com',
-        password: process.env.ADMIN_PWD || 'e10adc3949ba59abbe56e057f20f883e',
-        isAdmin: true
-      }]
-    }).write()
+    await db.init({ dbDir, dbFilename })
+    app.set('db', await db.getDbInstance())
   } catch (err) {
     console.error(`Init database error:${err.message}`)
     process.exit(-1)

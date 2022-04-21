@@ -5,6 +5,7 @@ module.exports = {
     index: require('./pages/index')
   },
   api: {
-    articles: require('./api/articles')
+    articles: require('./api/articles'),
+    search: require('./api/search')
   }
 }

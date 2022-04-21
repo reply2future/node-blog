@@ -38,3 +38,48 @@ html
 			script(type='text/javascript', src='https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js', integrity='sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=', crossorigin='anonymous')
 			script(type='text/javascript', src='https://cdn.staticfile.org/popper.js/1.14.7/umd/popper.min.js', integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1', crossorigin='anonymous')
 			script(type='text/javascript', src='https://cdn.staticfile.org/bootstrap/4.6.1/js/bootstrap.min.js', integrity='sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2', crossorigin='anonymous')
+			script.
+				var $dropdown = $('#search-bar-dropdown');
+				var $searchInput = $('#search-bar-input');
+				var searching = false
+				$searchInput.on('input propertychange', function (e) {
+					var valueChanged = false;
+
+					if (e.type=='propertychange') {
+						valueChanged = e.originalEvent.propertyName == 'value';
+					} else {
+						valueChanged = true;
+					}
+					if (!valueChanged || searching) return;
+
+					searching = true;
+
+					setTimeout(function () {
+						var sendData = {
+							keyword: $searchInput.val(),
+						};
+						$.ajax({
+							url: '/api/search',
+							type: 'POST',
+							data: JSON.stringify(sendData), 
+							contentType: 'application/json; charset=utf-8',
+							dataType: 'json',
+						}).done(function(doneData, doneStatus, doneXHR){
+							if(doneXHR.status == 200) {
+								console.dir(doneData);
+								
+								$dropdown.empty();
+								doneData.message.forEach(function(item) {
+									$dropdown.append(`<a class="dropdown-item" href="${item.link}">${item.matches[0].highlight}</a>`)
+								});
+							} else {
+								//- alertView.addClass('alert-warning');
+								console.log('error')
+							}
+						}).fail(function(failXHR, failStatus, errorThrow){
+							console.error(errorThrow);
+						}).always(function(){
+							searching = false;
+						});
+					}, 1000)
+				})
