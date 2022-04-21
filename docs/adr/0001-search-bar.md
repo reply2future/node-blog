@@ -6,6 +6,8 @@ Date: 2022-04-21
 
 2022-04-21 proposed
 
+2022-04-21 accepted
+
 ## Context
 
 It could search `content` or `title` easily.
