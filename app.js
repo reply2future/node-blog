@@ -14,6 +14,10 @@ const api = routes.api
 
 const app = express()
 app.locals.appTitle = 'My Blog'
+app.locals.ga = process.env.GOOGLE_ANALYTICS === 'true'
+app.locals.gid = process.env.GOOGLE_ANALYTICS_ID
+app.locals.dsq = process.env.DISQUS === 'true'
+app.locals.dsqn = process.env.DISQUS_NAME
 
 app.set('trust proxy', true)
 

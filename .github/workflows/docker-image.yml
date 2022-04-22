@@ -82,6 +82,10 @@ jobs:
           MAIL_USER: ${{ secrets.MAIL_USER }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           DB_PATH: ${{ secrets.DB_PATH }}
+          GOOGLE_ANALYTICS: true
+          GOOGLE_ANALYTICS_ID: UA-152095536-1
+          DISQUS: true
+          DISQUS_NAME: reply2future-pw
         with:
           input: docker-compose.yml.template
           output: docker-compose.yml

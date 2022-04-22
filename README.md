@@ -16,11 +16,11 @@ A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with 
 
 ## Usage
 
-There are two ways to deploy the service. If you want to deploy automatically, you could refer to [my CI/CD](.github/workflows/docker-image.yml)
+If you want to deploy automatically, you could refer to [my CI/CD](.github/workflows/docker-image.yml)
 
-### npm command(first way)
+### Configuration
 
-#### Configuration
+Using the environment variables to configure the service.
 
 ```text
 ADMIN_USER:                         // the username to login the blog administrator beckend
@@ -32,38 +32,24 @@ MAIL_USER:                          // error mail user
 MAIL_PASS:                          // error mail password
 MAIL_FROM:                          // error mail from
 MAIL_TO:                            // error mail to notify `receiver`
+GOOGLE_ANALYTICS:                   // use google analytics or not, boolean type, default `false`
+GOOGLE_ANALYTICS_ID:                // if use google analytics, set the gid, such as `UA-152095536-1`
+DISQUS:                             // use disqus comment or not, boolean type, default `false`
+DISQUS_NAME:                        // if use disqus comment, set the name, such as `reply2future-pw`
 ```
 
-#### Steps
+### Launch
+
+There are two ways to deploy the service: `npm command` and `docker-compose`.
+
+#### npm command
 
 1. Set the environment variable
 2. Run below command on the root of project.
 
 > npm start
 
-All done!Check <http://localhost:3000>
-
-----
-
-### docker-compose(second-way)
-
-#### Configuration
-
-```text
-ADMIN_USER:                         // the username to login the blog administrator beckend
-ADMIN_PWD:                          // the password to login the blog, use the `MD5` string
-COOKIE_SECRET: 
-SESSION_SECRET: 
-MAIL_HOST:                          // error mail host
-MAIL_USER:                          // error mail user
-MAIL_PASS:                          // error mail password
-MAIL_FROM:                          // error mail from
-MAIL_TO:                            // error mail to notify `receiver`
-IMAGE_NAME                          // the project image name, for examples `feimeizhan/node-blog:c6b5ab59532b5e98ea1860fd8bb618f33f57302a`
-DB_PATH:                            // the db location
-```
-
-#### Steps
+#### docker-compose
 
 1. Rename the file `docker-compose.yml.template` to `docker-compose.yml`
 2. Build your image and push it to the image registry, and you could refer to the command `npm run build-img:linux` of `package.json`.
@@ -72,18 +58,13 @@ DB_PATH:                            // the db location
 
 > docker-compose up -d
 
-All done!Check <http://localhost:3000>
+---
 
-### Configuration
+All done! Check <http://localhost:3000>
 
-- Use your Disqus comment plugin
-**IMPORTANT:** use your own **embed.js** url to replace mine in the *views/article.pug*
+### MORE
 
-```javascript
-s.src = 'https://reply2future-pw.disqus.com/embed.js';
-```
-
-- Create your **db** directory to store your data,and see **docker-compose.yml** [volumes](https://docs.docker.com/engine/reference/builder/#volume) settings.
+Create your **db** directory to store your data,and see **docker-compose.yml** [volumes](https://docs.docker.com/engine/reference/builder/#volume) settings.
 
 ## Test
 
@@ -96,5 +77,4 @@ s.src = 'https://reply2future-pw.disqus.com/embed.js';
 ## Reference
 
 1.[Dockerizing a Node.js web app](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
-
 2.[Manage data in containers](https://docs.docker.com/engine/tutorials/dockervolumes/)
