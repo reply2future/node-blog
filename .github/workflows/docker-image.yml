@@ -87,7 +87,7 @@ jobs:
           DISQUS: true
           DISQUS_NAME: reply2future-pw
           VIRTUAL_HOST: blog.reply2future.pw
-          ENABLE_ACME: 'true'
+          ENABLE_ACME: true
           VIRTUAL_PORT: 3000
         with:
           input: docker-compose.yml.template

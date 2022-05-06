@@ -7,7 +7,7 @@ services:
       - db:/usr/src/app/db
     environment:
       VIRTUAL_HOST: ${VIRTUAL_HOST}
-      ENABLE_ACME: ${ENABLE_ACME}
+      ENABLE_ACME: '${ENABLE_ACME}'
       VIRTUAL_PORT: ${VIRTUAL_PORT}
       NODE_ENV: production
       NODE_PORT: 3000
