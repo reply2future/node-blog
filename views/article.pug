@@ -8,16 +8,15 @@ block append link
 block content
 	.row
 		.col-sm-9
-			p
-				h3= title
-				#other-info
-					span.text-muted tags:
-						each value, index in tags
-							span.mx-1.badge.badge-info= value
-					span.text-muted Last Modified: 
-					span.text-muted= new Date(lastModified)
-				hr
-				#editor(value=`${text}`)
+			h1= title
+			#other-info
+				span.text-muted tags:
+					each value, index in tags
+						span.mx-1.badge.badge-info= value
+				span.text-muted Last Modified: 
+				span.text-muted= new Date(lastModified)
+			hr
+			#editor(value=`${text}`)
 			#disqus_thread
 		.col-sm-3
 			nav.sticky-top#toc(data-toggle='toc')
