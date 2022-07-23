@@ -2,6 +2,7 @@
 
 [![Build Status](https://app.travis-ci.com/reply2future/node-blog.svg?branch=master)](https://app.travis-ci.com/github/reply2future/node-blog)
 [![Coverage Status](https://coveralls.io/repos/github/feimeizhan/node-blog/badge.svg?branch=master)](https://coveralls.io/github/feimeizhan/node-blog?branch=master)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with docker.Occupies less resources and simple.
 
@@ -36,6 +37,14 @@ GOOGLE_ANALYTICS:                   // use google analytics or not, boolean type
 GOOGLE_ANALYTICS_ID:                // if use google analytics, set the gid, such as `UA-152095536-1`
 DISQUS:                             // use disqus comment or not, boolean type, default `false`
 DISQUS_NAME:                        // if use disqus comment, set the name, such as `reply2future-pw`
+
+# for rss feed https://www.npmjs.com/package/rss to find more details
+RSS_SITE_URL:                       // your website name like https://blog.reply2future.pw
+RSS_TITLE:                          // for rss feed title
+RSS_DESCRIPTION:                    // for rss feed description
+RSS_WEB_MASTER:                     // optional
+RSS_COPYRIGHT:                      // optional
+RSS_LANGUAGE:                       // optional
 ```
 
 ### Launch

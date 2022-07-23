@@ -228,6 +228,39 @@ describe('api module', () => {
     })
   })
 
+  describe('rss feed module', function () {
+    it('should get feed xml successfully', function (done) {
+      const mockPostData = JSON.parse(JSON.stringify(postData))
+      mockPostData.title = 'test rss feed'
+      mockPostData.id = Date.now().toString()
+      authorizedUser
+        .post('http://localhost:' + app.port + '/api/articles')
+        .send(JSON.stringify(mockPostData))
+        .set('Content-Type', 'application/json')
+        .end(function (err, res) {
+          expect(err).to.be.equal(null)
+          expect(res.status).to.equal(201)
+
+          authorizedUser
+            .put('http://localhost:' + app.port + '/api/articles/' + mockPostData.article.id)
+            .send(JSON.stringify(mockPostData))
+            .set('Content-Type', 'application/json')
+            .end(function (err, res) {
+              expect(err).to.be.equal(null)
+              expect(res.status).to.equal(200)
+              superagent
+                .get('http://localhost:' + app.port + '/api/rss')
+                .end(function (err, res) {
+                  expect(err).to.be.equal(null)
+                  expect(res.status).to.equal(200)
+                  expect(res.body.toString()).to.contain(mockPostData.article.title)
+                  done()
+                })
+            })
+        })
+    })
+  })
+
   after(function () {
     app.shutdown()
   })

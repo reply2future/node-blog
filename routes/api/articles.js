@@ -1,3 +1,4 @@
+const { addFeed } = require('../../rss')
 /*
  * get all articles
  * {
@@ -55,6 +56,18 @@ exports.editArticleById = async (req, res, next) => {
       return res.status(400).json({ message: 'No article ID.' })
     }
     await req.db.get('articles').updateById(req.params.id, req.body.article).write()
+
+    // TODO: move it to db operation, because it should be triggered when the article is modified or inserted.
+    if (req.body.article.published) {
+      const article = await req.db.get('articles').getById(req.params.id).value()
+      addFeed({
+        title: article.title,
+        description: article.title,
+        slug: article.slug,
+        date: article.lastModified
+      })
+    }
+
     res.status(200).json({ message: 'Article was edited.' })
   } catch (error) {
     next(error)
