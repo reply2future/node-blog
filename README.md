@@ -2,6 +2,7 @@
 
 [![Build Status](https://app.travis-ci.com/reply2future/node-blog.svg?branch=master)](https://app.travis-ci.com/github/reply2future/node-blog)
 [![Coverage Status](https://coveralls.io/repos/github/feimeizhan/node-blog/badge.svg?branch=master)](https://coveralls.io/github/feimeizhan/node-blog?branch=master)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 A blog use Node.js,[lowdb](https://github.com/typicode/lowdb) and deployed with docker.Occupies less resources and simple.
 
