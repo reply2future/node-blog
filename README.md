@@ -37,6 +37,14 @@ GOOGLE_ANALYTICS:                   // use google analytics or not, boolean type
 GOOGLE_ANALYTICS_ID:                // if use google analytics, set the gid, such as `UA-152095536-1`
 DISQUS:                             // use disqus comment or not, boolean type, default `false`
 DISQUS_NAME:                        // if use disqus comment, set the name, such as `reply2future-pw`
+
+# for rss feed https://www.npmjs.com/package/rss to find more details
+RSS_SITE_URL:                       // your website name like https://blog.reply2future.pw
+RSS_TITLE:                          // for rss feed title
+RSS_DESCRIPTION:                    // for rss feed description
+RSS_WEB_MASTER:                     // optional
+RSS_COPYRIGHT:                      // optional
+RSS_LANGUAGE:                       // optional
 ```
 
 ### Launch
