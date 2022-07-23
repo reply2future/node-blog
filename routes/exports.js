@@ -6,6 +6,7 @@ module.exports = {
   },
   api: {
     articles: require('./api/articles'),
-    search: require('./api/search')
+    search: require('./api/search'),
+    rss: require('./api/rss')
   }
 }

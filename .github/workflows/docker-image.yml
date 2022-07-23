@@ -89,6 +89,12 @@ jobs:
           VIRTUAL_HOST: blog.reply2future.pw
           ENABLE_ACME: true
           VIRTUAL_PORT: 3000
+          RSS_SITE_URL: https://blog.reply2future.pw
+          RSS_TITLE: reply2future-blog
+          RSS_DESCRIPTION: Some cool things about dev
+          RSS_WEB_MASTER: Mervyn Zhan
+          RSS_COPYRIGHT: Mervyn Zhan
+          RSS_LANGUAGE: zh
         with:
           input: docker-compose.yml.template
           output: docker-compose.yml

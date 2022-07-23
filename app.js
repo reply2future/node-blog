@@ -105,6 +105,7 @@ app.get('/api/articles', api.articles.getAllArticles)
 app.post('/api/articles', authorize, mergeArticleArgs, checkArticleArgs, api.articles.postArticle)
 
 app.post('/api/search', api.search.search)
+app.get('/api/rss', api.rss.feed)
 
 // error handler
 app.use((err, req, res, next) => {
