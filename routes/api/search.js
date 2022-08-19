@@ -16,7 +16,7 @@ const options = {
   keys: ['title', 'text']
 }
 
-function cleanData (matches) {
+function buildData (matches) {
   return matches.map(m => {
     return {
       link: `/articles/${m.item.slug}`,
@@ -30,6 +30,17 @@ function cleanData (matches) {
       })
     }
   })
+}
+
+function removeBase64 (text) {
+  return text.replaceAll(/\(data:image\/png;base64,.+?\)/g, '')
+}
+
+function cleanData (data) {
+  return data.map(item => ({
+    ...item,
+    text: removeBase64(item.text)
+  }))
 }
 
 /*
@@ -46,11 +57,11 @@ exports.search = async (req, res, next) => {
   const _keyword = req.body.keyword
 
   const _data = await req.db.get('articles').value()
-  const fuse = new Fuse(_data, options)
+  const fuse = new Fuse(cleanData(_data), options)
 
   try {
     const _matches = fuse.search(_keyword)
-    const _ret = cleanData(_matches)
+    const _ret = buildData(_matches)
     res.status(200).json({ message: _ret })
   } catch (error) {
     next(error)
