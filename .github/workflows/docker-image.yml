@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [ '12', '14', '16' ]
+        node: [ '16', '18' ]
     name: Node ${{ matrix.node }} code-review
     steps:
       - uses: actions/checkout@v2
@@ -29,7 +29,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [ '12', '14', '16' ]
+        node: [ '16', '18' ]
     name: Node ${{ matrix.node }} unit-test
     steps:
       - uses: actions/checkout@v2
